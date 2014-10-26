@@ -1,4 +1,5 @@
 #include "VoxelMap.hpp"
+#include "PolyVoxCore/MarchingCubesSurfaceExtractor.h"
 
 VoxelMap::VoxelMap(uint32_t sizeX, uint32_t sizeY, uint32_t sizeZ):
     volume(PolyVox::Region(PolyVox::Vector3DInt32(0,0,0),PolyVox::Vector3DInt32(sizeX-1,sizeY-1,sizeZ-1)))
@@ -26,3 +27,11 @@ void VoxelMap::set(uint32_t x, uint32_t y, uint32_t z,const Voxel& voxel)
 uint32_t VoxelMap::getSizeX() { return sizeX; }
 uint32_t VoxelMap::getSizeY() { return sizeY; }
 uint32_t VoxelMap::getSizeZ() { return sizeZ; }
+
+
+void VoxelMap::extract(PolyVox::Region region, PolyVox::SurfaceMesh<PolyVox::PositionMaterialNormal>& mesh)
+{
+    PolyVox::MarchingCubesSurfaceExtractor<PolyVox::SimpleVolume<Voxel>>
+        surfaceExtractor(&volume,region,&mesh);
+    surfaceExtractor.execute();
+}

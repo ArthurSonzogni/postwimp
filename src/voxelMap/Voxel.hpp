@@ -5,25 +5,28 @@
 //#include "PolyVoxCore/DefaultIsQuadNeeded.h" //we'll specialise this function for this voxel type
 //#include "PolyVoxCore/DefaultMarchingCubesController.h" //We'll specialise the controller contained in here
 
-#include "utils/glm.hpp"
+#include "PolyVoxCore/MaterialDensityPair.h"
 
-class Voxel
-{
-    public:
-        Voxel();
-        Voxel(glm::vec4 color, float density);
+typedef PolyVox::MaterialDensityPair<uint64_t, 8, 8*3> Voxel;
 
-        //Density
-        void setDensity(float density);
-        float getDensity();
 
-        //Color
-        void setColor(const glm::vec4& color);
-        glm::vec4& getColor();
+//class Voxel
+//{
+    //public:
+        //Voxel();
+        //Voxel(glm::vec4 color, float density);
 
-    private:
-        glm::vec4 color;
-        float density;
-};
+        ////Density
+        //void setDensity(float density);
+        //float getDensity();
+
+        ////Color
+        //void setColor(const glm::vec4& color);
+        //glm::vec4& getColor();
+
+    //private:
+        //glm::vec4 color;
+        //float density;
+//};
 
 #endif /* end of include guard: VOXEL_P271X96W */

@@ -18,8 +18,9 @@ class VoxelMap
         uint32_t getSizeZ();
 
         // getMesh
-        //PolyVox::SurfaceMesh<PolyVox::PolyVox
+        void extract(PolyVox::Region region, PolyVox::SurfaceMesh<PolyVox::PositionMaterialNormal>& mesh);
     private:
+
         // dimension
         uint32_t sizeX, sizeY, sizeZ;
 
