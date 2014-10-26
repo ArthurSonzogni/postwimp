@@ -1,18 +1,22 @@
 #version 330
+in vec4 fColor;
+in vec3 fNormal;
+in vec3 fLightDirection;
+in vec3 fEyeDirection;
 
-in vec3 fPosition;
-
-layout (location = 0) out vec4 outWorldPos;
-layout (location = 1) out vec4 outDiffuse;
-layout (location = 2) out vec4 outNormal;
-
-in vec4 fNormal;
-
-uniform vec4 color = vec4(0.5);
+uniform float eta = 48.0;
 
 void main()
 {
-    outWorldPos = vec4(fPosition,1.0);
-    outDiffuse  = color;
-    outNormal   = fNormal;
+    vec3 n = normalize(fNormal);
+    vec3 e = normalize(fEyeDirection);
+    vec3 l = normalize(fLightDirection);
+    vec3 r = normalize(reflect(-e,n));
+
+    float ambient = 0.3;
+    float diffus = max(dot(n,l),0.0) * 0.5;
+    float specular = pow(max(dot(r,l),0.0),eta) * 2.0;
+
+    gl_FragColor.a = 1.0;
+    gl_FragColor.rgb = fColor.rgb * (ambient+diffus+specular);
 } 

@@ -17,6 +17,10 @@ class VoxelMap
         uint32_t getSizeY();
         uint32_t getSizeZ();
 
+        // block access
+        Voxel get(uint32_t x, uint32_t y, uint32_t z);
+        void set(uint32_t x, uint32_t y, uint32_t z,const Voxel& voxel);
+
         // getMesh
         void extract(PolyVox::Region region, PolyVox::SurfaceMesh<PolyVox::PositionMaterialNormal>& mesh);
     private:
@@ -24,9 +28,6 @@ class VoxelMap
         // dimension
         uint32_t sizeX, sizeY, sizeZ;
 
-        // block access
-        Voxel get(uint32_t x, uint32_t y, uint32_t z);
-        void set(uint32_t x, uint32_t y, uint32_t z,const Voxel& voxel);
 
         // attributes
         glm::ivec3 needUpdateMin,needUpdateMax;

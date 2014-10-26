@@ -41,6 +41,7 @@ class VoxelMapDisplayer
         {
             GLuint vao;
             GLuint vbo;
+            GLuint veo;
             uint32_t size;
         };
 

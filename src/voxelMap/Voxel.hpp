@@ -7,7 +7,7 @@
 
 #include "PolyVoxCore/MaterialDensityPair.h"
 
-typedef PolyVox::MaterialDensityPair<uint64_t, 8, 8*3> Voxel;
+typedef PolyVox::MaterialDensityPair<uint32_t, 8*4, 8> Voxel;
 
 
 //class Voxel
