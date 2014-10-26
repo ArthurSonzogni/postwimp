@@ -2,4 +2,5 @@
 
 int main()
 {
+    VoxelMap v(100,100,100);
 }

@@ -12,6 +12,15 @@ class Voxel
     public:
         Voxel();
         Voxel(glm::vec4 color, float density);
+
+        //Density
+        void setDensity(float density);
+        float getDensity();
+
+        //Color
+        void setColor(const glm::vec4& color);
+        glm::vec4& getColor();
+
     private:
         glm::vec4 color;
         float density;

@@ -9,12 +9,26 @@
 class VoxelMap
 {
     public:
-        VoxelMap(int sizeX, int sizeY, int sizeZ);
+        // constructor
+        VoxelMap(uint32_t sizeX, uint32_t sizeY, uint32_t sizeZ);
+
+        // dimension
+        uint32_t getSizeX();
+        uint32_t getSizeY();
+        uint32_t getSizeZ();
+
+        // getMesh
+        //PolyVox::SurfaceMesh<PolyVox::PolyVox
     private:
-        int sizeX, sizeY, sizeZ;
+        // dimension
+        uint32_t sizeX, sizeY, sizeZ;
 
+        // block access
+        Voxel get(uint32_t x, uint32_t y, uint32_t z);
+        void set(uint32_t x, uint32_t y, uint32_t z,const Voxel& voxel);
+
+        // attributes
         glm::ivec3 needUpdateMin,needUpdateMax;
-
         PolyVox::SimpleVolume<Voxel> volume;
 };
 
