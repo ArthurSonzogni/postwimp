@@ -6,25 +6,12 @@
 class ShaderLib
 {
     public:
-        static ShaderProgram* geometry;
-        static ShaderProgram* geometryColor;
-        static ShaderProgram* compose;
-
+        static ShaderProgram* voxel;
         ShaderLib() 
         {
-            geometry = & ShaderProgram::loadFromFile(
-                "shader/geometryPass.vert",
-                "shader/geometryPass.frag"
-            );
-
-            geometryColor = & ShaderProgram::loadFromFile(
-                "shader/geometryPassColor.vert",
-                "shader/geometryPassColor.frag"
-            );
-
-            compose = & ShaderProgram::loadFromFile(
-                "shader/compose.vert",
-                "shader/compose.frag"
+            voxel = & ShaderProgram::loadFromFile(
+                "shader/voxel.vert",
+                "shader/voxel.frag"
             );
         }
 };

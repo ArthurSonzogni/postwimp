@@ -1,6 +1,8 @@
 #include "voxelMap/VoxelMap.hpp"
+#include "application/PostWIMPApplication.hpp"
 
 int main()
 {
-    VoxelMap v(100,100,100);
+    PostWIMPApplication app;
+    app.run();
 }
