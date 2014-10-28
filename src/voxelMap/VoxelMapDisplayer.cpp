@@ -7,14 +7,17 @@ VoxelMapDisplayer::VoxelMapDisplayer(VoxelMap& voxelMap,uint32_t bufferSize):
     voxelMap(voxelMap),
     bufferSize(bufferSize)
 {
-    nbBlockX = (voxelMap.getSizeX()+bufferSize-1)/bufferSize;
-    nbBlockY = (voxelMap.getSizeY()+bufferSize-1)/bufferSize;
-    nbBlockZ = (voxelMap.getSizeZ()+bufferSize-1)/bufferSize;
+    sizeX = voxelMap.getSizeX();
+    sizeY = voxelMap.getSizeY();
+    sizeZ = voxelMap.getSizeZ();
+    nbBlockX = (sizeX+bufferSize-1)/bufferSize;
+    nbBlockY = (sizeY+bufferSize-1)/bufferSize;
+    nbBlockZ = (sizeZ+bufferSize-1)/bufferSize;
     nbBlock = nbBlockX * nbBlockY * nbBlockZ;
 
     // allocate MeshGL
     mesh.reserve(nbBlock);
-    for(uint32_t i = 0 ; i<nbBlock ; ++i)
+    for(int32_t i = 0 ; i<nbBlock ; ++i)
     {
         mesh[i] = {0,0,0,0};
     }
@@ -23,7 +26,7 @@ VoxelMapDisplayer::VoxelMapDisplayer(VoxelMap& voxelMap,uint32_t bufferSize):
 void VoxelMapDisplayer::display()
 {
     ShaderLib::voxel->use();
-    for(uint32_t i = 0 ; i < nbBlock ; ++i)
+    for(int32_t i = 0 ; i < nbBlock ; ++i)
     {
         MeshGL& m = mesh[i]; 
         if (m.size)
@@ -46,28 +49,29 @@ void VoxelMapDisplayer::update(PolyVox::Region region)
     const PolyVox::Vector3DInt32& lowerCorner = region.getLowerCorner();
     const PolyVox::Vector3DInt32& upperCorner = region.getUpperCorner();
 
-    uint32_t xmin,xmax;
-    uint32_t ymin,ymax;
-    uint32_t zmin,zmax;
+    int32_t xmin,xmax;
+    int32_t ymin,ymax;
+    int32_t zmin,zmax;
 
-    xmin = lowerCorner.getX() / nbBlockX;
-    ymin = lowerCorner.getY() / nbBlockY;
-    zmin = lowerCorner.getZ() / nbBlockZ;
+    xmin = ( lowerCorner.getX() - 1 )/ bufferSize;
+    ymin = ( lowerCorner.getY() - 1 )/ bufferSize;
+    zmin = ( lowerCorner.getZ() - 1 )/ bufferSize;
 
-    xmax = ( upperCorner.getX() + nbBlockX -1 ) / nbBlockX;
-    ymax = ( upperCorner.getY() + nbBlockX -1 ) / nbBlockY;
-    zmax = ( upperCorner.getZ() + nbBlockX -1 ) / nbBlockZ;
+    xmax = ( upperCorner.getX() + 1 )/ bufferSize;
+    ymax = ( upperCorner.getY() + 1 )/ bufferSize;
+    zmax = ( upperCorner.getZ() + 1 )/ bufferSize;
 
-    if (xmin>nbBlockX) xmin = 0;
-    if (ymin>nbBlockY) ymin = 0;
-    if (zmin>nbBlockZ) zmin = 0;
-    if (xmax>nbBlockX) xmax = nbBlockX;
-    if (ymax>nbBlockY) ymax = nbBlockY;
-    if (zmax>nbBlockZ) zmax = nbBlockZ;
+    if (xmin<0) xmin = 0;
+    if (ymin<0) ymin = 0;
+    if (zmin<0) zmin = 0;
 
-    for(uint32_t z = zmin; z<zmax; ++z)
-    for(uint32_t y = ymin; y<ymax; ++y)
-    for(uint32_t x = xmin; x<xmax; ++x)
+    if (xmax>=nbBlockX) xmax = nbBlockX-1;
+    if (ymax>=nbBlockY) ymax = nbBlockY-1;
+    if (zmax>=nbBlockZ) zmax = nbBlockZ-1;
+
+    for(int32_t z = zmin; z<=zmax; ++z)
+    for(int32_t y = ymin; y<=ymax; ++y)
+    for(int32_t x = xmin; x<=xmax; ++x)
         updateBox(x,y,z);
 }
 
@@ -80,9 +84,24 @@ void VoxelMapDisplayer::updateBox(uint32_t x, uint32_t y, uint32_t z)
 
     MeshGL& meshGL = mesh[pos];
     
+    int32_t xmin = x*bufferSize;
+    int32_t ymin = y*bufferSize;
+    int32_t zmin = z*bufferSize;
+    int32_t xmax = xmin+bufferSize;
+    int32_t ymax = ymin+bufferSize;
+    int32_t zmax = zmin+bufferSize;
+
+    if (xmax>sizeX) xmax=sizeX;
+    if (ymax>sizeY) ymax=sizeY;
+    if (zmax>sizeZ) zmax=sizeZ;
+
+    if (xmax<xmin) return;
+    if (ymax<ymin) return;
+    if (zmax<zmin) return;
+    
     PolyVox::Region region(
-        PolyVox::Vector3DInt32((x+0)*bufferSize,(y+0)*bufferSize,(z+0)*bufferSize),
-        PolyVox::Vector3DInt32((x+1)*bufferSize,(y+1)*bufferSize,(z+1)*bufferSize)
+        PolyVox::Vector3DInt32(xmin,ymin,zmin),
+        PolyVox::Vector3DInt32(xmax,ymax,zmax)
     );
 
     PolyVox::SurfaceMesh<PolyVox::PositionMaterialNormal> m;

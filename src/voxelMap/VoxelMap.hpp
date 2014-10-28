@@ -21,6 +21,9 @@ class VoxelMap
         Voxel get(uint32_t x, uint32_t y, uint32_t z);
         void set(uint32_t x, uint32_t y, uint32_t z,const Voxel& voxel);
 
+        // block modifier
+        void increase(uint32_t x, uint32_t y, uint32_t z, float lambda);
+
         // getMesh
         void extract(PolyVox::Region region, PolyVox::SurfaceMesh<PolyVox::PositionMaterialNormal>& mesh);
     private:

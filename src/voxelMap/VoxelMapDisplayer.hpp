@@ -25,8 +25,9 @@ class VoxelMapDisplayer
         VoxelMap& voxelMap;
 
         // block/buffer dimension
-        uint32_t bufferSize;
-        uint32_t nbBlockX,nbBlockY,nbBlockZ,nbBlock;
+        int32_t bufferSize;
+        int32_t nbBlockX,nbBlockY,nbBlockZ,nbBlock;
+        int32_t sizeX,sizeY,sizeZ;
 
         // GLVertice
         struct GLVertice

@@ -29,4 +29,5 @@ typedef PolyVox::MaterialDensityPair<uint32_t, 8*4, 8> Voxel;
         //float density;
 //};
 
+
 #endif /* end of include guard: VOXEL_P271X96W */

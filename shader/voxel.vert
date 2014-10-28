@@ -8,7 +8,7 @@ uniform mat4 projection = mat4(1);
 uniform mat4 model = mat4(1);
 uniform mat4 view = mat4(1);
 
-uniform vec4 lightPosition = vec4(0.0,0.0,10.0,1.0);
+uniform vec4 lightPosition = vec4(0.0,10.0,0.0,0.0);
 
 out vec4 fColor;
 out vec3 fNormal;
