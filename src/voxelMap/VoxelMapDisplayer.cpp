@@ -25,7 +25,12 @@ VoxelMapDisplayer::VoxelMapDisplayer(VoxelMap& voxelMap,uint32_t bufferSize):
 
 void VoxelMapDisplayer::display()
 {
+    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    //glEnable( GL_BLEND );
+    //glDisable( GL_DEPTH_TEST);
     ShaderLib::voxel->use();
+    static float j = 0.0;
+    j+=0.1;
     for(int32_t i = 0 ; i < nbBlock ; ++i)
     {
         MeshGL& m = mesh[i]; 

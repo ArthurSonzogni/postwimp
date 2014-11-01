@@ -4,7 +4,7 @@ in vec3 fNormal;
 in vec3 fLightDirection;
 in vec3 fEyeDirection;
 
-uniform float eta = 48.0;
+uniform float eta = 128.0;
 
 void main()
 {
@@ -15,8 +15,8 @@ void main()
 
     float ambient = 0.3;
     float diffus = max(dot(n,l),0.0) * 0.5;
-    float specular = pow(max(dot(r,l),0.0),eta) * 2.0;
+    float specular = pow(max(dot(r,l),0.0),eta) * 2.0 * fColor.a;
 
-    gl_FragColor.a = 1.0;
+    gl_FragColor.a = 0.5;
     gl_FragColor.rgb = fColor.rgb * (ambient+diffus+specular);
 } 

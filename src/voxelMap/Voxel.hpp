@@ -28,15 +28,21 @@ namespace PolyVox
         {
             return voxel.getDensity();
         }
-        MaterialType convertToMaterial(Voxel voxel)
-        {
-            return voxel.getMaterial();
-        }
+        //MaterialType convertToMaterial(Voxel voxel)
+        //{
+            //return voxel.getMaterial();
+        //}
 
         Voxel blendMaterials(Voxel a, Voxel b, float weight)
         {
             MaterialType m1 = a.getMaterial();
             MaterialType m2 = b.getMaterial();
+
+            uint32_t d1 = a.getDensity();
+            uint32_t d2 = b.getDensity();
+            
+            float cWeight = (d2*weight+1.0)/(d1*(1.0-weight)+d2*weight+1.0);
+            //cWeight = weight;
 
             float a1 = m1&0xFF; m1>>=8;
             float b1 = m1&0xFF; m1>>=8;
@@ -48,17 +54,18 @@ namespace PolyVox
             float g2 = m2&0xFF; m2>>=8;
             float r2 = m2&0xFF; m2>>=8;
 
-            uint8_t cr = r1*(1.0-weight)+r2*weight;            
-            uint8_t cg = g1*(1.0-weight)+g2*weight;            
-            uint8_t cb = b1*(1.0-weight)+b2*weight;            
-            uint8_t ca = a1*(1.0-weight)+a2*weight;            
+            
+            uint8_t cr = r1*(1.0-cWeight)+r2*cWeight ;            
+            uint8_t cg = g1*(1.0-cWeight)+g2*cWeight ;            
+            uint8_t cb = b1*(1.0-cWeight)+b2*cWeight ;            
+            uint8_t ca = a1*(1.0-cWeight)+a2*cWeight ;            
 
             MaterialType m = ca + (cb<<8) + (cg<<16) + (cr<<24);
 
             return Voxel(
                     m,
-                    a.getDensity()*(1.0-weight)+
-                    b.getDensity()*weight
+                    d1*(1.0-weight)+
+                    d2*weight
             );
         }
 

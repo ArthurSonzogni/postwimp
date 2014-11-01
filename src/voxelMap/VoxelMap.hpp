@@ -6,6 +6,7 @@
 #include "PolyVoxCore/MarchingCubesSurfaceExtractor.h"
 #include "PolyVoxCore/Mesh.h"
 #include "PolyVoxCore/PagedVolume.h"
+#include "PolyVoxCore/RawVolume.h"
 
 class VoxelMap
 {
@@ -36,7 +37,7 @@ class VoxelMap
 
         // attributes
         glm::ivec3 needUpdateMin,needUpdateMax;
-        PolyVox::PagedVolume<Voxel> volume;
+        PolyVox::RawVolume<Voxel> volume;
 };
 
 #endif /* end of include guard: VOXELMAP_SEH0LAHJ */

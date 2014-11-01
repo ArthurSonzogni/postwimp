@@ -3,7 +3,7 @@ postwimp
 
 Description in progress
 
-installing the right version of PolyVox
+installing the development version of PolyVox
 =======================================
 
 You need:
@@ -16,4 +16,10 @@ you can type theses commands:
 * cmake .
 * sudo make install
 
+Keyboard
+========
 
+* moving   : Z,Q,S,D,A,E
+* rotating : J,L,K,I,U,O
+* put glue : simply move the mouse.
+* change color of the glue : SPACE.
