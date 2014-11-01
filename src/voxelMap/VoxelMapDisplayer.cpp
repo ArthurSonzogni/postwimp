@@ -19,7 +19,7 @@ VoxelMapDisplayer::VoxelMapDisplayer(VoxelMap& voxelMap,uint32_t bufferSize):
     mesh.reserve(nbBlock);
     for(int32_t i = 0 ; i<nbBlock ; ++i)
     {
-        mesh[i] = {0,0,0,0};
+        mesh[i] = {0,0,0,0,{0,0,0}};
     }
 }
 
@@ -31,6 +31,7 @@ void VoxelMapDisplayer::display()
         MeshGL& m = mesh[i]; 
         if (m.size)
         {
+            ShaderLib::voxel -> setUniform("model", glm::translate(glm::mat4(1.0),m.translation));
             glBindVertexArray(m.vao);
             glDrawElements(
                  GL_TRIANGLES,      // mode
@@ -104,82 +105,69 @@ void VoxelMapDisplayer::updateBox(uint32_t x, uint32_t y, uint32_t z)
         PolyVox::Vector3DInt32(xmax,ymax,zmax)
     );
 
-    PolyVox::SurfaceMesh<PolyVox::PositionMaterialNormal> m;
 
-    voxelMap.extract(region, m);
+    auto m = voxelMap.extract(region);
+    //voxelMap.extract(region, m);
 
-	const std::vector<PolyVox::PositionMaterialNormal>& vecVertices = m.getVertices();
-	const std::vector<uint32_t>& vecIndices = m.getIndices();
-
+    const auto& vecVertices = m.getVertices();
+    const auto& vecIndices= m.getIndices();
 
     if (meshGL.size != 0)
     {
         glDeleteVertexArrays(1,&meshGL.vao);
         glDeleteBuffers(1,&meshGL.vbo);
         glDeleteBuffers(1,&meshGL.veo);
-        meshGL = {0,0,0,0};
+        meshGL = {0,0,0,0,{0,0,0}};
     }
 
     if (vecVertices.size() > 0)
     {
-
-        // building vecVBO
-        std::vector<GLVertice> vecVBO;
-        vecVBO.reserve(vecVertices.size());
-        for(vector<PolyVox::PositionMaterialNormal>::const_iterator iterVertex = vecVertices.begin(); iterVertex != vecVertices.end(); ++iterVertex)
-        {
-            const PolyVox::PositionMaterialNormal& vertex = *iterVertex;
-            const PolyVox::Vector3DFloat& pos = vertex.getPosition();
-            const PolyVox::Vector3DFloat& normal = vertex.getNormal();
-            uint32_t material = vertex.getMaterial();
-
-            float px = pos.getX() + x*bufferSize ;
-            float py = pos.getY() + y*bufferSize ;
-            float pz = pos.getZ() + z*bufferSize ;
-
-            float nx = normal.getX();
-            float ny = normal.getY();
-            float nz = normal.getZ();
-
-            float a = (material&0xFF)/255.0; material >>= 8;
-            float b = (material&0xFF)/255.0; material >>= 8;
-            float g = (material&0xFF)/255.0; material >>= 8;
-            float r = (material&0xFF)/255.0; material >>= 8;
-
-            vecVBO.push_back({{px,py,pz},{nx,ny,nz},{r,g,b,a}});
-        }
-
-
-        // building vecVEO (simple alias in this case)
-        const std::vector<uint32_t>& vecVEO = vecIndices;
-        
-
-        // vbo
-        glGenBuffers( 1, &meshGL.vbo );
-        glBindBuffer(GL_ARRAY_BUFFER, meshGL.vbo);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(GLVertice)*vecVBO.size(), &vecVBO[0], GL_STATIC_DRAW);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-        // veo
-        glGenBuffers(1, &meshGL.veo);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshGL.veo);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, vecVEO.size() * sizeof(uint32_t), &vecVEO[0], GL_STATIC_DRAW);
-
-        // vao
+		// vao
         glGenVertexArrays( 1, &meshGL.vao);
         glBindVertexArray(meshGL.vao);
 
             // vbo
-            glBindBuffer(GL_ARRAY_BUFFER,meshGL.vbo);
-            ShaderLib::voxel -> setAttribute("position", 3, GL_FALSE, 10, 0);
-            ShaderLib::voxel -> setAttribute("normal", 3, GL_FALSE, 10, 3);
-            ShaderLib::voxel -> setAttribute("color"  , 4, GL_FALSE, 10, 6);
+            glGenBuffers( 1, &meshGL.vbo );
+            glBindBuffer(GL_ARRAY_BUFFER, meshGL.vbo);
+            glBufferData(GL_ARRAY_BUFFER, vecVertices.size() * sizeof(Mesh::VertexType), vecVertices.data(), GL_STATIC_DRAW);
 
             // veo
+            glGenBuffers(1, &meshGL.veo);
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshGL.veo);
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, vecIndices.size() * sizeof(Mesh::IndexType), vecIndices.data(), GL_STATIC_DRAW);
 
-        glBindVertexArray(0);
+            GLuint positionLoc = ShaderLib::voxel -> attribLocation("position");
+            GLuint   normalLoc = ShaderLib::voxel -> attribLocation("normal");
+            GLuint    colorLoc = ShaderLib::voxel -> attribLocation("color");
+
+            // vbo name mapping
+            // Position
+            glEnableVertexAttribArray(positionLoc);
+            glVertexAttribPointer(positionLoc, 3, GL_FLOAT, GL_FALSE, sizeof(Mesh::VertexType), (GLvoid*)(offsetof(Mesh::VertexType, position))); 
+            // Normal
+            glEnableVertexAttribArray(normalLoc);
+            glVertexAttribPointer(normalLoc, 3, GL_FLOAT, GL_FALSE, sizeof(Mesh::VertexType), (GLvoid*)(offsetof(Mesh::VertexType, normal)));
+            glEnableVertexAttribArray(colorLoc); 
+
+            // Color
+            glEnableVertexAttribArray(colorLoc);
+            GLint size = (std::min)(sizeof(Mesh::VertexType::DataType), size_t(4));
+            glVertexAttribIPointer(colorLoc, size, GL_UNSIGNED_BYTE, sizeof(Mesh::VertexType), (GLvoid*)(offsetof(Mesh::VertexType, data)));
+
+            //cout<<"----"<<endl;
+            //cout<<positionLoc<<endl;
+            //cout<<normalLoc<<endl;
+            //cout<<colorLoc<<endl;
+            //cout<<sizeof(Mesh::VertexType)<<endl;
+
+            //ShaderLib::voxel -> setAttribute("position", 3, GL_FALSE, sizeof(Mesh::VertexType)/sizeof(GL_FLOAT),offsetof(Mesh::VertexType, position)/sizeof(GL_FLOAT));
+            //ShaderLib::voxel -> setAttribute("normal", 3, GL_FALSE, sizeof(Mesh::VertexType)/sizeof(GL_FLOAT),  offsetof(Mesh::VertexType, normal)/sizeof(GL_FLOAT));
+            //ShaderLib::voxel -> setAttribute("color"  , 4, GL_FALSE, sizeof(Mesh::VertexType), offsetof(Mesh::VertexType, data));
+
+		// vao end
+		glBindVertexArray(0);
 
         meshGL.size = vecIndices.size();
+        meshGL.translation = {xmin,ymin,zmin};
     }
 }

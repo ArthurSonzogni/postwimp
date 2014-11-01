@@ -44,6 +44,7 @@ class VoxelMapDisplayer
             GLuint vbo;
             GLuint veo;
             uint32_t size;
+            glm::vec3 translation;
         };
 
         // update Box

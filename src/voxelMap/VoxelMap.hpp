@@ -2,9 +2,10 @@
 #define VOXELMAP_SEH0LAHJ
 
 #include "Voxel.hpp"
-#include "PolyVoxCore/CubicSurfaceExtractorWithNormals.h"
-#include "PolyVoxCore/SurfaceMesh.h"
-#include "PolyVoxCore/SimpleVolume.h"
+#include "PolyVoxCore/CubicSurfaceExtractor.h"
+#include "PolyVoxCore/MarchingCubesSurfaceExtractor.h"
+#include "PolyVoxCore/Mesh.h"
+#include "PolyVoxCore/PagedVolume.h"
 
 class VoxelMap
 {
@@ -22,10 +23,11 @@ class VoxelMap
         void set(uint32_t x, uint32_t y, uint32_t z,const Voxel& voxel);
 
         // block modifier
-        void increase(uint32_t x, uint32_t y, uint32_t z, float lambda);
+        void lerp(uint32_t x, uint32_t y, uint32_t z, Voxel target, float lambda);
 
         // getMesh
-        void extract(PolyVox::Region region, PolyVox::SurfaceMesh<PolyVox::PositionMaterialNormal>& mesh);
+        Mesh extract(PolyVox::Region region);
+
     private:
 
         // dimension
@@ -34,7 +36,7 @@ class VoxelMap
 
         // attributes
         glm::ivec3 needUpdateMin,needUpdateMax;
-        PolyVox::SimpleVolume<Voxel> volume;
+        PolyVox::PagedVolume<Voxel> volume;
 };
 
 #endif /* end of include guard: VOXELMAP_SEH0LAHJ */

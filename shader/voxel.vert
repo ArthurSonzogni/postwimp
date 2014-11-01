@@ -2,7 +2,7 @@
 
 in vec3 position;
 in vec3 normal;
-in vec4 color;
+in ivec4 color;
 
 uniform mat4 projection = mat4(1);
 uniform mat4 model = mat4(1);
@@ -17,7 +17,7 @@ out vec3 fEyeDirection;
 
 void main()
 {
-    fColor = color;
+    fColor = color/256.0;
 
     vec4 pos = view * model * vec4(position,1.0);
 

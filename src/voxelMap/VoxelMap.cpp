@@ -25,17 +25,14 @@ uint32_t VoxelMap::getSizeY() { return sizeY; }
 uint32_t VoxelMap::getSizeZ() { return sizeZ; }
 
 
-void VoxelMap::extract(PolyVox::Region region, PolyVox::SurfaceMesh<PolyVox::PositionMaterialNormal>& mesh)
+Mesh VoxelMap::extract(PolyVox::Region region)
 {
-    PolyVox::MarchingCubesSurfaceExtractor<PolyVox::SimpleVolume<Voxel>>
-        surfaceExtractor(&volume,region,&mesh);
-    surfaceExtractor.execute();
+	auto mesh = extractMarchingCubesMesh(&volume, region);
+    return decodeMesh(mesh);
 }
 
-void VoxelMap::increase(uint32_t x, uint32_t y, uint32_t z, float lambda)
+void VoxelMap::lerp(uint32_t x, uint32_t y, uint32_t z, Voxel target, float lambda)
 {
-    Voxel v = get(x,y,z);
-    uint32_t level = 255.0*(v.getDensity()/255.0+lambda)/(1.0+lambda);
-    set(x,y,z, Voxel(v.getMaterial()&0xFF0FFFFF,level));
-    
+    PolyVox::DefaultMarchingCubesController<Voxel> c;
+    volume.setVoxelAt(x,y,z,c.blendMaterials(volume.getVoxelAt(x,y,z),target,lambda));
 }
