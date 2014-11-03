@@ -36,7 +36,7 @@ void VoxelMapDisplayer::display()
         MeshGL& m = mesh[i]; 
         if (m.size)
         {
-            ShaderLib::voxel -> setUniform("model", glm::translate(glm::mat4(1.0),m.translation));
+            ShaderLib::voxel -> setUniform("model", glm::translate(glm::mat4(1.0),m.translation*1.01f));
             glBindVertexArray(m.vao);
             glDrawElements(
                  GL_TRIANGLES,      // mode

@@ -13,6 +13,7 @@ You need the development version of Polyvox
 you can type theses commands:
 * git clone https://bitbucket.org/volumesoffun/polyvox.git
 * cd polyvox
+* git checkout origin/develop
 * cmake .
 * sudo make install
 
