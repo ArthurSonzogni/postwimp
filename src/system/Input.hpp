@@ -20,14 +20,6 @@ class Input
         static bool isMouseHold(int key);
         static double mouseX();
         static double mouseY();
-        static void setMousePos(double x, double y); // relative
-
-        static void fixMouse();
-        static void unfixMouse();
-        static bool isMouseFixed();
-
-        static float getHorAngle();
-        static float getVerAngle();
 };
 
 #endif /* end of include guard: INPUT_QHZPGW1N */
