@@ -36,3 +36,13 @@ void VoxelMap::lerp(uint32_t x, uint32_t y, uint32_t z, Voxel target, float lamb
     PolyVox::DefaultMarchingCubesController<Voxel> c;
     volume.setVoxelAt(x,y,z,c.blendMaterials(volume.getVoxelAt(x,y,z),target,lambda));
 }
+void VoxelMap::lerpDensity(uint32_t x, uint32_t y, uint32_t z, Voxel target, float lambda)
+{
+    Voxel v = volume.getVoxelAt(x,y,z);
+    v.setDensity(v.getDensity() * (1.0-lambda) + target.getDensity() * lambda);
+    volume.setVoxelAt(x,y,z,v);
+}
+void VoxelMap::lerpColor(uint32_t /*x*/, uint32_t /*y*/, uint32_t /*z*/, Voxel /*target*/, float /*lambda*/)
+{
+    
+}

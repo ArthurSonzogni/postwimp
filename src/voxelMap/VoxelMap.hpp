@@ -25,6 +25,8 @@ class VoxelMap
 
         // block modifier
         void lerp(uint32_t x, uint32_t y, uint32_t z, Voxel target, float lambda);
+        void lerpDensity(uint32_t x, uint32_t y, uint32_t z, Voxel target, float lambda);
+        void lerpColor(uint32_t x, uint32_t y, uint32_t z, Voxel target, float lambda);
 
         // getMesh
         Mesh extract(PolyVox::Region region);
@@ -37,7 +39,8 @@ class VoxelMap
 
         // attributes
         glm::ivec3 needUpdateMin,needUpdateMax;
-        PolyVox::RawVolume<Voxel> volume;
+        PolyVox::PagedVolume<Voxel> volume;
+        //PolyVox::RawVolume<Voxel> volume;
 };
 
 #endif /* end of include guard: VOXELMAP_SEH0LAHJ */
