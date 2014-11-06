@@ -1,4 +1,4 @@
-#version 330
+#version 130
 in vec4 fColor;
 in vec3 fNormal;
 in vec3 fLightDirection;
