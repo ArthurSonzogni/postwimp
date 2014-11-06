@@ -1,3 +1,4 @@
+#include <wiicpp.h>
 #include "PostWIMPApplication.hpp"
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -10,6 +11,8 @@ using namespace std;
 
 int32_t H = 128;
 
+int WIIMOTE_LED_MAP[4] = {CWiimote::LED_1, CWiimote::LED_2, CWiimote::LED_3, CWiimote::LED_4};
+
 PostWIMPApplication::PostWIMPApplication():
     voxelMap(H,H,H),
     voxelMapDisplayer(voxelMap,24)
@@ -21,6 +24,157 @@ PostWIMPApplication::PostWIMPApplication():
         glm::vec3(0.0,0.0,0.0),
         glm::vec3(0.0,0.0,1.0)
     );
+
+    // Connect to the wiimote(s)
+    connectToWiimotes(1, 2);
+}
+
+void PostWIMPApplication::connectToWiimotes(int numWiimotes, int timeout)
+{
+    wii = new CWii(numWiimotes);
+    std::vector<CWiimote>::iterator i;
+    int numFound;
+    int index;
+
+    cout << "Searching for wiimotes... Turn them on!" << endl;
+
+    //Find the wiimote
+    numFound = wii->Find(timeout);
+
+    // Search for up to five seconds;
+
+    cout << "Found " << numFound << " wiimotes" << endl;
+    cout << "Connecting to wiimotes..." << endl;
+
+    // Connect to the wiimote
+    wiimotes = wii->Connect();
+
+	cout << "Connected to " << (unsigned int)wiimotes.size() << " wiimotes" << endl;
+
+    // Setup the wiimotes
+    for(index = 0, i = wiimotes.begin(); i != wiimotes.end(); ++i, ++index)
+    {
+        // Use a reference to make working with the iterator handy.
+        CWiimote & wiimote = *i;
+
+        //Set Leds
+        wiimote.SetLEDs(WIIMOTE_LED_MAP[index]);
+
+        //Rumble for 0.2 seconds as a connection ack
+        wiimote.SetRumbleMode(CWiimote::ON);
+        usleep(200000);
+        wiimote.SetRumbleMode(CWiimote::OFF);
+    }
+    
+    cout << "\nPress PLUS (MINUS) to enable (disable) Motion Sensing Report (only accelerometers)" << endl;
+	cout << "Press RIGHT (LEFT) to enable (disable) Motion Plus (requires Motion Sensing enabled)" << endl;
+	cout << "Press UP (DOWN) to enable (disable) IR camera (requires some IR led)" << endl;
+}
+
+void PostWIMPApplication::handleWiimoteStatus(CWiimote &wm)
+{
+    printf("\n");
+    printf("--- CONTROLLER STATUS [wiimote id %i] ---\n\n", wm.GetID());
+
+    printf("attachment: %i\n", wm.ExpansionDevice.GetType());
+    printf("speaker: %i\n", wm.isUsingSpeaker());
+    printf("ir: %i\n", wm.isUsingIR());
+    printf("leds: %i %i %i %i\n", wm.isLEDSet(1), wm.isLEDSet(2), wm.isLEDSet(3), wm.isLEDSet(4));
+    printf("battery: %f %%\n", wm.GetBatteryLevel());
+}
+
+void PostWIMPApplication::handleWiimoteDisconnect(CWiimote &wm)
+{
+    printf("\n");
+    printf("--- DISCONNECTED [wiimote id %i] ---\n", wm.GetID());
+    printf("\n");
+}
+
+void PostWIMPApplication::handleWiimoteReadData(CWiimote &wm)
+{
+    printf("\n");
+    printf("--- DATA READ [wiimote id %i] ---\n", wm.GetID());
+    printf("\n");
+}
+
+void PostWIMPApplication::getWiimoteUpdates()
+{
+    static bool reloadWiimotes = false;
+    if(reloadWiimotes)
+    {
+        // Regenerate the list of wiimotes
+        wiimotes = wii->GetWiimotes();
+        reloadWiimotes = 0;
+    }
+
+    //Poll the wiimotes to get the status like pitch or roll
+    if(wii->Poll())
+    {
+        for(i = wiimotes.begin(); i != wiimotes.end(); ++i)
+        {
+            // Use a reference to make working with the iterator handy.
+            CWiimote & wiimote = *i;
+            switch(wiimote.GetEvent())
+            {
+
+                case CWiimote::EVENT_EVENT:
+                    break;
+
+                case CWiimote::EVENT_STATUS:
+                    handleWiimoteStatus(wiimote);
+                    break;
+
+                case CWiimote::EVENT_DISCONNECT:
+                case CWiimote::EVENT_UNEXPECTED_DISCONNECT:
+                    handleWiimoteDisconnect(wiimote);
+                    reloadWiimotes = true;
+                    break;
+
+                case CWiimote::EVENT_READ_DATA:
+                    handleWiimoteReadData(wiimote);
+                    break;
+
+                case CWiimote::EVENT_NUNCHUK_INSERTED:
+                    cout << "Nunchuk inserted on controller " << wm.GetID() << endl;
+                    reloadWiimotes = true;
+                    break;
+
+                case CWiimote::EVENT_CLASSIC_CTRL_INSERTED:
+                    cout << "Classic controller inserted on controller " << wm.GetID() << endl;
+                    reloadWiimotes = true;
+                    break;
+
+                case CWiimote::EVENT_GUITAR_HERO_3_CTRL_INSERTED:
+                    cout << "GH3 inserted on controller " << wm.GetID() << endl;
+                    reloadWiimotes = true;
+                    break;
+
+                case CWiimote::EVENT_MOTION_PLUS_INSERTED:
+                    cout << "Motion Plus inserted." << endl;
+                    break;
+
+                case CWiimote::EVENT_BALANCE_BOARD_INSERTED:
+                    cout << "Balance Board connected.\n"  << endl;
+                    break;
+
+                case CWiimote::EVENT_BALANCE_BOARD_REMOVED:
+                    cout << "Balance Board disconnected.\n"  << endl;
+                    break;
+
+                case CWiimote::EVENT_NUNCHUK_REMOVED:
+                case CWiimote::EVENT_CLASSIC_CTRL_REMOVED:
+                case CWiimote::EVENT_GUITAR_HERO_3_CTRL_REMOVED:
+                case CWiimote::EVENT_MOTION_PLUS_REMOVED:
+                    cout << "An expansion was removed." << endl;
+                    HandleStatus(wiimote);
+                    reloadWiimotes = true;
+                    break;
+
+                default:
+                    break;
+            }
+        }
+    }
 }
 
 void PostWIMPApplication::loop()
@@ -35,6 +189,8 @@ void PostWIMPApplication::step()
 {
     // update the keyboard/mouse states
     Input::update(getWindow());
+    // poll the wiimote(s) for state updates
+    getWiimoteUpdates();
 
     static float i = 2;
     static bool ok = true;

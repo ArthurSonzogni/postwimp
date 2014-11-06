@@ -1,6 +1,7 @@
 #ifndef POSTWIMPAPPLICATION_7WD7L3VK
 #define POSTWIMPAPPLICATION_7WD7L3VK
 
+#include <wiicpp.h>
 #include "system/Application.hpp"
 #include "utils/glm.hpp"
 #include "voxelMap/VoxelMap.hpp"
@@ -13,6 +14,11 @@ class PostWIMPApplication : public Application
         PostWIMPApplication();
 
     private:
+        void connectToWiimotes(int numWiimotes, int timeout);
+        void handleWiimoteStatus(CWiimote &wm);
+        void handleWiimoteDisconnect(CWiimote &wm);
+        void handleWiimoteReadData(CWiimote &wm);
+        void getWiimoteUpdates();
 
         virtual void loop();
         void step();
@@ -23,6 +29,9 @@ class PostWIMPApplication : public Application
 
         VoxelMap voxelMap;
         VoxelMapDisplayer voxelMapDisplayer;
+
+        CWii *wii;
+        std::vector<CWiimote>& wiimotes;
 
         void cameraEvent();
 };

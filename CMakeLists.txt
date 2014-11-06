@@ -89,6 +89,8 @@ find_package(GLEW REQUIRED)
 find_package(PolyVox REQUIRED)
 #SET(CMAKE_FIND_FRAMEWORK NEVER)
 find_package(SFML 2 COMPONENTS system REQUIRED)
+#find_package(Bluetooth REQUIRED)
+find_package(WiiCpp REQUIRED)
 
 
 #includes
@@ -98,6 +100,7 @@ include_directories(
     ${GLFW_INCLUDE_DIR}
     ${SFML_INCLUDE_DIR}
     ${PolyVox_INCLUDE_DIRS}
+    ${WIICPP_INCLUDE_DIRS}
 )
 
 # libs
@@ -108,6 +111,7 @@ target_link_libraries(
     ${OPENGL_LIBRARIES}
     ${SFML_LIBRARIES}
     ${PolyVox_LIBRARIES}
+    ${WIICPP_LIBRARIES}
 )
 
 add_custom_target(run
