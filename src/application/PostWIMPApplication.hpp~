@@ -31,7 +31,7 @@ class PostWIMPApplication : public Application
         VoxelMapDisplayer voxelMapDisplayer;
 
         CWii *wii;
-        std::vector<CWiimote> wiimotes;
+        std::vector<CWiimote>& wiimotes;
 
         void cameraEvent();
 };

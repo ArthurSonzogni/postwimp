@@ -5,11 +5,8 @@
 #include "Application.hpp"
 #include <iostream>
 #include "utils/glError.hpp"
-#include <wiicpp.h>
 
 using namespace std;
-
-int WIIMOTE_LED_MAP[4] = {CWiimote::LED_1, CWiimote::LED_2, CWiimote::LED_3, CWiimote::LED_4};
 
 Application* currentApplication;
 
@@ -20,9 +17,9 @@ Application& Application::getInstance()
 
 Application::Application():
     state(stateReady),
-    title("Application"),
     width(640),
-    height(480)
+    height(480),
+    title("Application")
 {
     currentApplication=this;
 
@@ -112,9 +109,6 @@ void Application::run() {
 
     //Make the window's context current
     glfwMakeContextCurrent(window);
-
-    // Connect to the wiimote
-    auto wiimotes = connectToWiimotes(1, 2);
 
     auto timePrevious = (float)glfwGetTime();
 

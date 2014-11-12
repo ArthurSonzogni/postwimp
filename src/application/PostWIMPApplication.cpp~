@@ -357,7 +357,7 @@ void PostWIMPApplication::cameraEvent()
     // Handle Wiimote / Nunchuk
     for(auto i = wiimotes.begin(); i != wiimotes.end(); ++i)
     {
-        CWiimote & wm = *i;
+        CWiimote & wiimote = *i;
         int exType = wm.ExpansionDevice.GetType();
         if(exType == wm.ExpansionDevice.TYPE_NUNCHUK)
         {
