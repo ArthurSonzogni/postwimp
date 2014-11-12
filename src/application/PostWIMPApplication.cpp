@@ -257,6 +257,13 @@ void PostWIMPApplication::step()
         int pz = T;
         bool isAdd = Input::isMouseHold(GLFW_MOUSE_BUTTON_LEFT);
         bool isRem = Input::isMouseHold(GLFW_MOUSE_BUTTON_RIGHT);
+        // Wiimote random crap
+        for(auto i = wiimotes.begin(); i != wiimotes.end(); ++i)
+        {
+            CWiimote & wm = *i;
+            if (!isAdd) isAdd = wm.Buttons.isHeld(CButtons::BUTTON_B);
+            if (!isRem) isRem = wm.Buttons.isHeld(CButtons::BUTTON_A);
+        }
         uint8_t currentDensity;
         if (isAdd)
             currentDensity = 255;
@@ -367,24 +374,24 @@ void PostWIMPApplication::cameraEvent()
             //TODO: remove buttons and use tracker
             if(nc.Buttons.isPressed(CNunchukButtons::BUTTON_Z))
             {
-                if (wm.Buttons.isPressed(CButtons::BUTTON_LEFT))
+                if (wm.Buttons.isHeld(CButtons::BUTTON_LEFT))
                     view = glm::translate(glm::mat4(1.0),glm::vec3(+tDelta,0.0,0.0))*view;
-                if (wm.Buttons.isPressed(CButtons::BUTTON_RIGHT))
+                if (wm.Buttons.isHeld(CButtons::BUTTON_RIGHT))
                     view = glm::translate(glm::mat4(1.0),glm::vec3(-tDelta,0.0,0.0))*view;
-                if (wm.Buttons.isPressed(CButtons::BUTTON_UP))
+                if (wm.Buttons.isHeld(CButtons::BUTTON_UP))
                     view = glm::translate(glm::mat4(1.0),glm::vec3(0.0,0.0,+tDelta))*view;
-                if (wm.Buttons.isPressed(CButtons::BUTTON_DOWN))
+                if (wm.Buttons.isHeld(CButtons::BUTTON_DOWN))
                     view = glm::translate(glm::mat4(1.0),glm::vec3(0.0,-tDelta,0.0))*view;
             }
             else
             {
-                if (wm.Buttons.isPressed(CButtons::BUTTON_LEFT))
+                if (wm.Buttons.isHeld(CButtons::BUTTON_LEFT))
                     view = glm::rotate(glm::mat4(1.0),rDelta,glm::vec3(-1.0,0.0,0.0))*view;
-                if (wm.Buttons.isPressed(CButtons::BUTTON_RIGHT))
+                if (wm.Buttons.isHeld(CButtons::BUTTON_RIGHT))
                     view = glm::rotate(glm::mat4(1.0),rDelta,glm::vec3(+1.0,0.0,0.0))*view;
-                if (wm.Buttons.isPressed(CButtons::BUTTON_UP))
+                if (wm.Buttons.isHeld(CButtons::BUTTON_UP))
                     view = glm::rotate(glm::mat4(1.0),rDelta,glm::vec3(0.0,0.0,+1.0))*view;
-                if (wm.Buttons.isPressed(CButtons::BUTTON_DOWN))
+                if (wm.Buttons.isHeld(CButtons::BUTTON_DOWN))
                     view = glm::rotate(glm::mat4(1.0),rDelta,glm::vec3(0.0,0.0,-1.0))*view;
             }
         } 
