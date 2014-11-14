@@ -31,6 +31,7 @@ PostWIMPApplication::PostWIMPApplication():
     connectToWiimotes(1, 2);
 }
 
+// TODO: move every wiimote related method to separate file
 void PostWIMPApplication::connectToWiimotes(int numWiimotes, int timeout)
 {
     wii = new CWii(numWiimotes);
@@ -183,6 +184,7 @@ void PostWIMPApplication::loop()
 {
     step();
     draw();
+    // TODO: handleKeyEvents();
 }
 
 inline float sqr(float t){return t*t;}
@@ -195,6 +197,7 @@ void PostWIMPApplication::step()
     getWiimoteUpdates();
 
     //static float i = 2;
+    // TODO: move this to constructor (?) or separate init method
     static bool ok = true;
     if (ok)
     {
@@ -220,6 +223,7 @@ void PostWIMPApplication::step()
         ));
     }
 
+    // TODO: rm if
     if (true)
     {
         static const uint32_t colorMap[]=
@@ -234,10 +238,13 @@ void PostWIMPApplication::step()
         static uint32_t currentColor = 0xFF0000FF;
 
 
+        //TODO: move to handleKeyEvents()
         static int colorIndex = 0;
         if (Input::isKeyPressed(GLFW_KEY_SPACE))
             currentColor = colorMap[++colorIndex%6];
 
+        //TODO: move to handleKeyEvents()
+        //TODO: use marker 
         const int T = 10;
         float mouseX = float(Input::mouseX()) / float(getWidth()) ; 
         float mouseY = 1.0-float(Input::mouseY()) / float(getHeight()) ; 
@@ -255,15 +262,18 @@ void PostWIMPApplication::step()
         int px = p.x;
         int py = p.y;
         int pz = T;
+
+        //TODO: move to handleKeyEvents()
         bool isAdd = Input::isMouseHold(GLFW_MOUSE_BUTTON_LEFT);
         bool isRem = Input::isMouseHold(GLFW_MOUSE_BUTTON_RIGHT);
-        // Wiimote random crap
+        // TODO: move Wiimote random crap
         for(auto i = wiimotes.begin(); i != wiimotes.end(); ++i)
         {
             CWiimote & wm = *i;
             if (!isAdd) isAdd = wm.Buttons.isHeld(CButtons::BUTTON_B);
             if (!isRem) isRem = wm.Buttons.isHeld(CButtons::BUTTON_A);
         }
+
         uint8_t currentDensity;
         if (isAdd)
             currentDensity = 255;
@@ -319,12 +329,17 @@ void PostWIMPApplication::step()
         }
     }
 
+    // TODO: poll keyboard, wiimotes, and NatNet (each in its own class)
+    // TODO: => store abstract 'keys' and check them in handleKeyEvents() (rename cameraEvent()) 
+    // TODO: remove the call from here (move it to loop())
     cameraEvent();
 
+    // TODO: move this to handleKeyEvents()
     // escape
     if (Input::isKeyPressed(GLFW_KEY_ESCAPE))
         exit();
 
+    // TODO: fancy progress bar? :D
     // print periodically fps
     static float deltaMean = getFrameDeltaTime();
     static int n = 0;
@@ -356,6 +371,7 @@ void PostWIMPApplication::draw()
     voxelMapDisplayer.display();
 }
 
+//TODO: rename to handleKeyEvents() and move to a separate file (?)
 void PostWIMPApplication::cameraEvent()
 {
     float tDelta = 40.0 * getFrameDeltaTime();
@@ -420,8 +436,10 @@ void PostWIMPApplication::cameraEvent()
         KEY_CAMERA_TURN_ZP,
         KEY_SAVE
     };
+    
+    // TODO: map not needed, use GLFW enum directly instead
     std::map<Keys,int> keys;
-
+    
     keys[KEY_ESCAPE] = GLFW_KEY_ESCAPE;
     keys[KEY_CAMERA_LEFT] = GLFW_KEY_A;
     keys[KEY_CAMERA_RIGHT] = GLFW_KEY_D;
