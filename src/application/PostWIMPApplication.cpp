@@ -397,6 +397,10 @@ void PostWIMPApplication::cameraEvent()
         } 
     }
 
+    // Special key: reconnect wiimotes
+    if (Input::isKeyPressed(GLFW_KEY_R))
+        connectToWiimotes(1, 1);
+
     // Handle keyboard
     enum Keys {
         KEY_ESCAPE,
