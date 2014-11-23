@@ -173,6 +173,21 @@ void PostWIMPApplication::step()
     {
         projection = glm::perspective(70.0f, getWindowRatio(), 0.1f, 10000.f);
     }
+
+    // wireframe mode
+    static bool isWireframeEnabled = false;
+    if (Input::isKeyPressed(GLFW_KEY_V))
+    {
+        isWireframeEnabled = ! isWireframeEnabled;
+        if (isWireframeEnabled)
+        {
+            glPolygonMode(GL_FRONT_AND_BACK,GL_LINE); 
+        }
+        else
+        {
+            glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
+        }
+    }
 }
 
 void PostWIMPApplication::draw()
