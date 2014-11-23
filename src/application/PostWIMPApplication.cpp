@@ -19,6 +19,7 @@ PostWIMPApplication::PostWIMPApplication():
 {
     ShaderLib shaderlib;
 
+    // plug controllers
     gameAction.plugController(new GameActionControllerKeyboard());
     gameAction.plugController(new GameActionControllerMouse());
     gameAction.plugController(new GameActionControllerMouseButton());
