@@ -5,6 +5,8 @@
 #include "utils/glm.hpp"
 #include "voxelMap/VoxelMap.hpp"
 #include "voxelMap/VoxelMapDisplayer.hpp"
+#include "Controller/GameAction.hpp"
+#include "Controller/GameActionController.hpp"
 
 
 class PostWIMPApplication : public Application
@@ -18,13 +20,12 @@ class PostWIMPApplication : public Application
         void step();
         void draw();
 
-        glm::mat4 projection;
-        glm::mat4 view;
-
         VoxelMap voxelMap;
         VoxelMapDisplayer voxelMapDisplayer;
 
         void cameraEvent();
+
+        GameAction gameAction;
 };
 
 #endif /* end of include guard: POSTWIMPAPPLICATION_7WD7L3VK */
