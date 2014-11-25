@@ -146,7 +146,7 @@ void PostWIMPApplication::step()
         cout << "fps=" << (int)(1/deltaMean) << endl;
 
 
-        // wireframe mode
+    // wireframe mode
     static bool isWireframeEnabled = false;
     if (Input::isKeyPressed(GLFW_KEY_V))
     {

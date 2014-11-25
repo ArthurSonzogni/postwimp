@@ -91,6 +91,7 @@ find_package(PolyVox REQUIRED)
 find_package(SFML 2 COMPONENTS system REQUIRED)
 #find_package(Bluetooth REQUIRED)
 find_package(WiiCpp REQUIRED)
+find_package(Boost COMPONENTS program_options system thread REQUIRED)
 
 
 #includes
@@ -101,6 +102,7 @@ include_directories(
     ${SFML_INCLUDE_DIR}
     ${PolyVox_INCLUDE_DIRS}
     ${WIICPP_INCLUDE_DIRS}
+    ${Boost_INCLUDE_DIRS}
 )
 
 # libs
@@ -112,6 +114,7 @@ target_link_libraries(
     ${SFML_LIBRARIES}
     ${PolyVox_LIBRARIES}
     ${WIICPP_LIBRARIES}
+    ${Boost_LIBRARIES}
 )
 
 add_custom_target(run
