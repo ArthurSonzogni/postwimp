@@ -54,7 +54,7 @@ void printFrames(FrameListener& frameListener)
     }
 }
 
-void connect(FrameListener** frameListener, CommandListener** commandListener, int sdCommand, int sdData, struct sockaddr_in serverCommands)
+void connectOptiTrack(FrameListener** frameListener, CommandListener** commandListener, int sdCommand, int sdData, struct sockaddr_in serverCommands)
 {
     // Start the CommandListener in a new thread.
     (*commandListener) = new CommandListener(sdCommand);
@@ -94,7 +94,7 @@ GameActionControllerOptiTrack::GameActionControllerOptiTrack()
     sdData = NatNet::createDataSocket( Globals::localAddress );
 
     //connect(&frameListener,&commandListener,sdCommand,sdData, serverCommands);
-    //boost::thread* t = new boost::thread(connect,&frameListener,&commandListener,sdCommand,sdData, serverCommands);
+    boost::thread* t = new boost::thread(connectOptiTrack,&frameListener,&commandListener,sdCommand,sdData, serverCommands);
 }
 
 
