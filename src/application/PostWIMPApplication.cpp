@@ -160,10 +160,6 @@ void PostWIMPApplication::step()
             glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
         }
     }
-    
-    // Special key: reconnect wiimotes
-    if (Input::isKeyPressed(GLFW_KEY_R))
-        connectToWiimotes(1, 1);
 }
 
 void PostWIMPApplication::draw()

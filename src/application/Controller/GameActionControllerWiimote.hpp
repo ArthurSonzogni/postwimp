@@ -17,7 +17,7 @@ class GameActionControllerWiimote : public GameActionController
         void handleWiimoteReadData(CWiimote &wm);
         void getWiimoteUpdates();
 
-        std::vector<CWiimote>& wiimotes;
+        std::vector<CWiimote> wiimotes;
         CWii *wii;
 };
 

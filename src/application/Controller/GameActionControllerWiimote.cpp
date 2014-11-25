@@ -7,7 +7,8 @@
 
 static const int WIIMOTE_LED_MAP[4] = {CWiimote::LED_1, CWiimote::LED_2, CWiimote::LED_3, CWiimote::LED_4};
 
-GameActionControllerWiimote::GameActionControllerWiimote()
+GameActionControllerWiimote::GameActionControllerWiimote() :
+    wiimotes(0)
 {
     // Connect to the wiimote(s)
     connectToWiimotes(1, 2);
@@ -32,27 +33,28 @@ void GameActionControllerWiimote::update(GameAction& gameAction, Application& ap
             if(nc.Buttons.isPressed(CNunchukButtons::BUTTON_Z))
             {
                 if (wm.Buttons.isHeld(CButtons::BUTTON_LEFT))
-                    view = glm::translate(glm::mat4(1.0),glm::vec3(+tDelta,0.0,0.0))*view;
+                    gameAction.view = glm::translate(glm::mat4(1.0),glm::vec3(+tDelta,0.0,0.0))*gameAction.view;
                 if (wm.Buttons.isHeld(CButtons::BUTTON_RIGHT))
-                    view = glm::translate(glm::mat4(1.0),glm::vec3(-tDelta,0.0,0.0))*view;
+                    gameAction.view = glm::translate(glm::mat4(1.0),glm::vec3(-tDelta,0.0,0.0))*gameAction.view;
                 if (wm.Buttons.isHeld(CButtons::BUTTON_UP))
-                    view = glm::translate(glm::mat4(1.0),glm::vec3(0.0,0.0,+tDelta))*view;
+                    gameAction.view = glm::translate(glm::mat4(1.0),glm::vec3(0.0,0.0,+tDelta))*gameAction.view;
                 if (wm.Buttons.isHeld(CButtons::BUTTON_DOWN))
-                    view = glm::translate(glm::mat4(1.0),glm::vec3(0.0,-tDelta,0.0))*view;
+                    gameAction.view = glm::translate(glm::mat4(1.0),glm::vec3(0.0,-tDelta,0.0))*gameAction.view;
             }
             else
             {
                 if (wm.Buttons.isHeld(CButtons::BUTTON_LEFT))
-                    view = glm::rotate(glm::mat4(1.0),rDelta,glm::vec3(-1.0,0.0,0.0))*view;
+                    gameAction.view = glm::rotate(glm::mat4(1.0),rDelta,glm::vec3(-1.0,0.0,0.0))*gameAction.view;
                 if (wm.Buttons.isHeld(CButtons::BUTTON_RIGHT))
-                    view = glm::rotate(glm::mat4(1.0),rDelta,glm::vec3(+1.0,0.0,0.0))*view;
+                    gameAction.view = glm::rotate(glm::mat4(1.0),rDelta,glm::vec3(+1.0,0.0,0.0))*gameAction.view;
                 if (wm.Buttons.isHeld(CButtons::BUTTON_UP))
-                    view = glm::rotate(glm::mat4(1.0),rDelta,glm::vec3(0.0,0.0,+1.0))*view;
+                    gameAction.view = glm::rotate(glm::mat4(1.0),rDelta,glm::vec3(0.0,0.0,+1.0))*gameAction.view;
                 if (wm.Buttons.isHeld(CButtons::BUTTON_DOWN))
-                    view = glm::rotate(glm::mat4(1.0),rDelta,glm::vec3(0.0,0.0,-1.0))*view;
+                    gameAction.view = glm::rotate(glm::mat4(1.0),rDelta,glm::vec3(0.0,0.0,-1.0))*gameAction.view;
             }
         }
     }
+}
 
 void GameActionControllerWiimote::connectToWiimotes(int numWiimotes, int timeout)
 {
