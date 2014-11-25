@@ -9,6 +9,7 @@
 #include "Controller/GameActionControllerMouse.hpp"
 #include "Controller/GameActionControllerMouseButton.hpp"
 #include "Controller/GameActionControllerWiimote.hpp"
+#include "Controller/GameActionControllerOptiTrack.hpp"
 
 using namespace std;
 
@@ -25,6 +26,7 @@ PostWIMPApplication::PostWIMPApplication():
     gameAction.plugController(new GameActionControllerMouse());
     gameAction.plugController(new GameActionControllerMouseButton());
     gameAction.plugController(new GameActionControllerWiimote());
+    gameAction.plugController(new GameActionControllerOptiTrack());
 }
 
 void PostWIMPApplication::loop()
