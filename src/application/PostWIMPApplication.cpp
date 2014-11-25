@@ -8,6 +8,7 @@
 #include "Controller/GameActionControllerKeyboard.hpp"
 #include "Controller/GameActionControllerMouse.hpp"
 #include "Controller/GameActionControllerMouseButton.hpp"
+#include "Controller/GameActionControllerWiimote.hpp"
 
 using namespace std;
 
@@ -23,6 +24,7 @@ PostWIMPApplication::PostWIMPApplication():
     gameAction.plugController(new GameActionControllerKeyboard());
     gameAction.plugController(new GameActionControllerMouse());
     gameAction.plugController(new GameActionControllerMouseButton());
+    gameAction.plugController(new GameActionControllerWiimote());
 }
 
 void PostWIMPApplication::loop()
@@ -145,7 +147,7 @@ void PostWIMPApplication::step()
 
 
         // wireframe mode
-        static bool isWireframeEnabled = false;
+    static bool isWireframeEnabled = false;
     if (Input::isKeyPressed(GLFW_KEY_V))
     {
         isWireframeEnabled = ! isWireframeEnabled;
@@ -158,6 +160,10 @@ void PostWIMPApplication::step()
             glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
         }
     }
+    
+    // Special key: reconnect wiimotes
+    if (Input::isKeyPressed(GLFW_KEY_R))
+        connectToWiimotes(1, 1);
 }
 
 void PostWIMPApplication::draw()
