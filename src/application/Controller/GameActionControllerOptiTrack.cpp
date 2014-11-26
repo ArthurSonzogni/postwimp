@@ -6,7 +6,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <signal.h>
 
 #include <unistd.h>
 #include <errno.h>
@@ -23,86 +22,23 @@
 #include <time.h>
 
 
-class Globals
-{
-    public:
-
-        // Parameters read from the command line
-        static uint32_t localAddress;
-        static uint32_t serverAddress;
-
-        // State of the main() thread.
-        static bool run;
-};
-
-uint32_t Globals::localAddress = 0;
-uint32_t Globals::serverAddress = 0;
-
-// This thread loop just prints frames as they arrive.
-void printFrames(FrameListener& frameListener)
-{
-    bool valid;
-    MocapFrame frame;
-    while( true )
-    {
-        // Try to get a new frame from the listener.
-        MocapFrame frame(frameListener.pop(&valid).first);
-        // Quit if the listener has no more frames.
-        if( !valid )
-            break;
-        std::cout << frame << std::endl;
-    }
-}
-
-void connectOptiTrack(FrameListener** frameListener, CommandListener** commandListener, int sdCommand, int sdData, struct sockaddr_in serverCommands)
-{
-    // Start the CommandListener in a new thread.
-    (*commandListener) = new CommandListener(sdCommand);
-    (*commandListener)->start();
-
-    // Send a ping packet to the server so that it sends us the NatNet version
-    // in its response to commandListener.
-    NatNetPacket ping = NatNetPacket::pingPacket();
-    ping.send(sdCommand, serverCommands);
-    // Version number of the NatNet protocol, as reported by the server.
-    unsigned char natNetMajor;
-    unsigned char natNetMinor;
-
-    // Wait here for ping response to give us the NatNet version.
-    (*commandListener)->getNatNetVersion(natNetMajor, natNetMinor);
-
-    // Start up a FrameListener in a new thread.
-    (*frameListener) = new FrameListener(sdData, natNetMajor, natNetMinor);
-    (*frameListener)->start();
-}
-
-GameActionControllerOptiTrack::GameActionControllerOptiTrack()
+GameActionControllerOptiTrack::GameActionControllerOptiTrack(std::string localAddress, std::string serverAddress) :
+    localAddress(inet_addr(localAddress.c_str())), serverAddress(inet_addr(serverAddress.c_str()))
 {
     frameListener = NULL;
     commandListener = NULL;
-    // Catch ctrl-c and terminate gracefully.
-    //signal(SIGINT, terminate);
 
-    // Set addresses
-    Globals::localAddress = inet_addr( "127.0.0.1");
-    Globals::serverAddress = inet_addr( "127.0.0.1");
     // Use this socket address to send commands to the server.
-    struct sockaddr_in serverCommands = NatNet::createAddress(Globals::serverAddress, NatNet::commandPort);
+    struct sockaddr_in serverCommands = NatNet::createAddress(this->serverAddress, NatNet::commandPort);
 
     // Create sockets
-    sdCommand = NatNet::createCommandSocket( Globals::localAddress );
-    sdData = NatNet::createDataSocket( Globals::localAddress );
+    sdCommand = NatNet::createCommandSocket(this->localAddress);
+    sdData = NatNet::createDataSocket(this->localAddress);
 
-    //connect(&frameListener,&commandListener,sdCommand,sdData, serverCommands);
-    boost::thread* t = new boost::thread(connectOptiTrack,&frameListener,&commandListener,sdCommand,sdData, serverCommands);
+    // Y U NO COMPILE?
+    //boost::thread* t = new boost::thread(connectOptiTrack, serverCommands);
 }
 
-
-void GameActionControllerOptiTrack::update(GameAction& gameAction, Application& application)
-{
-    if (frameListener)
-        printFrames(*frameListener);
-}
 
 GameActionControllerOptiTrack::~GameActionControllerOptiTrack()
 {
@@ -123,3 +59,48 @@ GameActionControllerOptiTrack::~GameActionControllerOptiTrack()
     if (commandListener)
         delete commandListener;
 }
+
+void GameActionControllerOptiTrack::update(GameAction& gameAction, Application& application)
+{
+    if (frameListener)
+        printFrames();
+}
+
+// This thread loop just prints frames as they arrive.
+void GameActionControllerOptiTrack::printFrames()
+{
+    bool valid;
+    MocapFrame frame;
+    while( true )
+    {
+        // Try to get a new frame from the listener.
+        MocapFrame frame(frameListener->pop(&valid).first);
+        // Quit if the listener has no more frames.
+        if( !valid )
+            break;
+        std::cout << frame << std::endl;
+    }
+}
+
+void GameActionControllerOptiTrack::connectOptiTrack(struct sockaddr_in serverCommands)
+{
+    // Start the CommandListener in a new thread.
+    commandListener = new CommandListener(sdCommand);
+    commandListener->start();
+
+    // Send a ping packet to the server so that it sends us the NatNet version
+    // in its response to commandListener.
+    NatNetPacket ping = NatNetPacket::pingPacket();
+    ping.send(sdCommand, serverCommands);
+    // Version number of the NatNet protocol, as reported by the server.
+    unsigned char natNetMajor;
+    unsigned char natNetMinor;
+
+    // Wait here for ping response to give us the NatNet version.
+    commandListener->getNatNetVersion(natNetMajor, natNetMinor);
+
+    // Start up a FrameListener in a new thread.
+    frameListener = new FrameListener(sdData, natNetMajor, natNetMinor);
+    frameListener->start();
+}
+

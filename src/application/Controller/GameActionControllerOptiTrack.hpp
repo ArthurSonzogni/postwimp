@@ -2,7 +2,7 @@
 #define GameActionControllerOptiTrack_HEAD
 
 #include "GameActionController.hpp"
-#include <map>
+#include <string>
 
 class FrameListener;
 class CommandListener;
@@ -10,14 +10,20 @@ class CommandListener;
 class GameActionControllerOptiTrack : public GameActionController
 {
     public:
-        GameActionControllerOptiTrack();
+        GameActionControllerOptiTrack(std::string localAddress, std::string serverAddress);
         ~GameActionControllerOptiTrack();
         virtual void update(GameAction& gameAction, Application& application);
     protected:
-        FrameListener* frameListener;
-        CommandListener* commandListener;
-        int sdData;
-        int sdCommand;
+        void printFrames();
+        void connectOptiTrack(struct sockaddr_in serverCommands);
+
+        // Addresses
+        uint32_t localAddress, serverAddress;    
+        // Sockets
+        int sdCommand, sdData;
+        // Listeners
+        CommandListener *commandListener;
+        FrameListener *frameListener;
 };
 
 #endif /* end of include guard: GameActionControllerOptiTrack_HEAD*/
