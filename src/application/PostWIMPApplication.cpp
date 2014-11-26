@@ -88,63 +88,39 @@ void PostWIMPApplication::step()
         //currentColor = colorMap[++colorIndex%6];
         gameAction.pencil.color = colorMap[++colorIndex%6];
 
-    const int T = 10;
+    const int T = 10 * gameAction.pencil.size;
 
     int px = gameAction.pencil.position.x;
     int py = gameAction.pencil.position.y;
     int pz = gameAction.pencil.position.z;
-    if (gameAction.action == GameAction::Add)
-    {
-        for(int x = -T/2; x<=T/2; ++x)
-            for(int y = -T/2; y<=T/2; ++y)
-                for(int z = -T/2; z<=T/2; ++z)
-                {
-                    float level = x*x+y*y+z*z;
-                    level *= 0.3;
-                    level = exp(-level);
-                    level *= 3.0;
-                    if (level>1.0) level=1.0;
-                    int xx = px + x;
-                    int yy = py + y;
-                    int zz = pz + z;
-                    if (xx>=1 and xx<H and yy>=1 and yy<H and zz>1 and zz<H)
-                        //voxelMap.lerp(xx,yy,zz,Voxel(currentColor,255),level);
-                        //TODO: use GameAction.pencil.strength
-                        voxelMap.lerp(xx,yy,zz,Voxel(gameAction.pencil.color,255),level);
-                }
 
-        // update the modified region
-        voxelMapDisplayer.update(PolyVox::Region(
-                    PolyVox::Vector3DInt32(px-T/2,py-T/2,pz-T/2),
-                    PolyVox::Vector3DInt32(px+T/2,py+T/2,pz+T/2)
-                    ));
-    }
-    // TODO: factoriser le code avec add
-    else if (gameAction.action == GameAction::Remove)
-    {
-        for(int x = -T/2; x<=T/2; ++x)
-            for(int y = -T/2; y<=T/2; ++y)
-                for(int z = -T/2; z<=T/2; ++z)
+    //TODO: pointeur fonction lerp
+    for(int x = -T/2; x<=T/2; ++x)
+        for(int y = -T/2; y<=T/2; ++y)
+            for(int z = -T/2; z<=T/2; ++z)
+            {
+                float level = x*x+y*y+z*z;
+                level *= 0.3 * gameAction.pencil.strength;
+                level = exp(-level);
+                level *= 3.0;
+                if (level>1.0) level=1.0;
+                int xx = px + x;
+                int yy = py + y;
+                int zz = pz + z;
+                if (xx>=1 and xx<H and yy>=1 and yy<H and zz>1 and zz<H)
                 {
-                    float level = x*x+y*y+z*z;
-                    level *= 0.3;
-                    level = exp(-level);
-                    level *= 3.0;
-                    if (level>1.0) level=1.0;
-                    int xx = px + x;
-                    int yy = py + y;
-                    int zz = pz + z;
-                    if (xx>=1 and xx<H and yy>=1 and yy<H and zz>1 and zz<H)
-                        //voxelMap.lerpDensity(xx,yy,zz,Voxel(currentColor,0.0),level);
+                    if (gameAction.action == GameAction::Add)
+                        voxelMap.lerp(xx,yy,zz,Voxel(gameAction.pencil.color,255),level);
+                    else if (gameAction.action == GameAction::Remove)
                         voxelMap.lerpDensity(xx,yy,zz,Voxel(gameAction.pencil.color,0.0),level);
                 }
+            }
 
-        // update the modified region
-        voxelMapDisplayer.update(PolyVox::Region(
-                    PolyVox::Vector3DInt32(px-T/2,py-T/2,pz-T/2),
-                    PolyVox::Vector3DInt32(px+T/2,py+T/2,pz+T/2)
-                    ));
-    }
+    // update the modified region
+    voxelMapDisplayer.update(PolyVox::Region(
+                PolyVox::Vector3DInt32(px-T/2,py-T/2,pz-T/2),
+                PolyVox::Vector3DInt32(px+T/2,py+T/2,pz+T/2)
+                ));
 
     // print periodically fps
     static float deltaMean = getFrameDeltaTime();

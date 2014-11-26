@@ -3,7 +3,6 @@
 #include "system/Application.hpp"
 
 GameAction::GameAction():
-    pencil(),
     action(Idle),
     projection(glm::perspective(70.0f, 1.0f, 0.1f, 10000.f)),
     view(glm::lookAt(
