@@ -79,18 +79,20 @@ void PostWIMPApplication::step()
         0xFF00FFFF,
         0xFFFF00FF,
     };
-    static uint32_t currentColor = 0xFF0000FF;
+    //static uint32_t currentColor = 0xFF0000FF;
 
 
+    //TODO: Input dans GameActionControllerXYZ
     static int colorIndex = 0;
     if (Input::isKeyPressed(GLFW_KEY_SPACE))
-        currentColor = colorMap[++colorIndex%6];
+        //currentColor = colorMap[++colorIndex%6];
+        gameAction.pencil.color = colorMap[++colorIndex%6];
 
     const int T = 10;
 
-    int px = gameAction.pointerPosition.x;
-    int py = gameAction.pointerPosition.y;
-    int pz = gameAction.pointerPosition.z;
+    int px = gameAction.pencil.position.x;
+    int py = gameAction.pencil.position.y;
+    int pz = gameAction.pencil.position.z;
     if (gameAction.action == GameAction::Add)
     {
         for(int x = -T/2; x<=T/2; ++x)
@@ -106,7 +108,9 @@ void PostWIMPApplication::step()
                     int yy = py + y;
                     int zz = pz + z;
                     if (xx>=1 and xx<H and yy>=1 and yy<H and zz>1 and zz<H)
-                        voxelMap.lerp(xx,yy,zz,Voxel(currentColor,255),level);
+                        //voxelMap.lerp(xx,yy,zz,Voxel(currentColor,255),level);
+                        //TODO: use GameAction.pencil.strength
+                        voxelMap.lerp(xx,yy,zz,Voxel(gameAction.pencil.color,255),level);
                 }
 
         // update the modified region
@@ -115,6 +119,7 @@ void PostWIMPApplication::step()
                     PolyVox::Vector3DInt32(px+T/2,py+T/2,pz+T/2)
                     ));
     }
+    // TODO: factoriser le code avec add
     else if (gameAction.action == GameAction::Remove)
     {
         for(int x = -T/2; x<=T/2; ++x)
@@ -130,7 +135,8 @@ void PostWIMPApplication::step()
                     int yy = py + y;
                     int zz = pz + z;
                     if (xx>=1 and xx<H and yy>=1 and yy<H and zz>1 and zz<H)
-                        voxelMap.lerpDensity(xx,yy,zz,Voxel(currentColor,0.0),level);
+                        //voxelMap.lerpDensity(xx,yy,zz,Voxel(currentColor,0.0),level);
+                        voxelMap.lerpDensity(xx,yy,zz,Voxel(gameAction.pencil.color,0.0),level);
                 }
 
         // update the modified region

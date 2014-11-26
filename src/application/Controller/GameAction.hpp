@@ -1,8 +1,8 @@
 #ifndef GAMEACTION_6YQTHSWZ
 #define GAMEACTION_6YQTHSWZ
 
-#include "utils/glm.hpp"
 #include <list>
+#include "utils/glm.hpp"
 
 class GameActionController;
 class Application;
@@ -21,16 +21,26 @@ class GameAction
             Remove,
             Idle
         };
+        
+        struct Pencil 
+        {
+            glm::vec3 position;
+            uint32_t color;
+            float size;
+            float strength;
+        };
+
+        Pencil pencil = { {0.0,0.0,0.0}, 0xFFFFFFFF, 1.0, 1.0 };
 
         // state of the GameAction
         Action action;
+
         glm::mat4 projection;
         glm::mat4 view;
-        glm::vec3 pointerPosition;
 
     protected:
 
-        // list of plugged Controller
+        // list of plugged Controllers
         std::list<GameActionController*> controllerList;
 };
 
