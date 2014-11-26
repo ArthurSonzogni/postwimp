@@ -25,5 +25,5 @@ void GameActionControllerMouse::update(GameAction& gameAction, Application& appl
     m2 = m2/m2.w;
     float lambda = (m1.z-T)/(m1.z-m2.z);
     glm::vec3 p = glm::vec3(m1 + (m2-m1) * lambda);
-    gameAction.pencil.position = p;
+    gameAction.brush.position = p;
 }

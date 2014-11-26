@@ -7,6 +7,18 @@
 
 static const int WIIMOTE_LED_MAP[4] = {CWiimote::LED_1, CWiimote::LED_2, CWiimote::LED_3, CWiimote::LED_4};
 
+static const uint32_t colorMap[]=
+    {
+        0xFF0000FF,
+        0x00FF00FF,
+        0x0000FFFF,
+        0x00FFFFFF,
+        0xFF00FFFF,
+        0xFFFF00FF,
+    };
+static int colorIndex = 0;
+
+
 GameActionControllerWiimote::GameActionControllerWiimote() :
     wiimotes(0)
 {
@@ -30,7 +42,7 @@ void GameActionControllerWiimote::update(GameAction& gameAction, Application& ap
 
             //if(nc.Buttons.isPressed(CNunchukButtons::BUTTON_C))
             //TODO: remove buttons and use tracker
-            if(nc.Buttons.isPressed(CNunchukButtons::BUTTON_Z))
+            /*if(nc.Buttons.isPressed(CNunchukButtons::BUTTON_Z))
             {
                 if (wm.Buttons.isHeld(CButtons::BUTTON_LEFT))
                     gameAction.view = glm::translate(glm::mat4(1.0),glm::vec3(+tDelta,0.0,0.0))*gameAction.view;
@@ -51,10 +63,34 @@ void GameActionControllerWiimote::update(GameAction& gameAction, Application& ap
                     gameAction.view = glm::rotate(glm::mat4(1.0),rDelta,glm::vec3(0.0,0.0,+1.0))*gameAction.view;
                 if (wm.Buttons.isHeld(CButtons::BUTTON_DOWN))
                     gameAction.view = glm::rotate(glm::mat4(1.0),rDelta,glm::vec3(0.0,0.0,-1.0))*gameAction.view;
+            }*/
+
+            //TODO: tester les valeurs
+            if (wm.Buttons.isPressed(CButtons::BUTTON_PLUS))
+                gameAction.brush.size += 0.1;
+            if (wm.Buttons.isPressed(CButtons::BUTTON_MINUS))
+                gameAction.brush.size -= 0.1;
+
+            //TODO: tester les valeurs
+            if (wm.Buttons.isPressed(CButtons::BUTTON_UP))
+                gameAction.brush.strength += 0.1;
+            if (wm.Buttons.isPressed(CButtons::BUTTON_DOWN))
+                gameAction.brush.strength -= 0.1;
+           
+            //TODO: tester si ça marche bien 
+            if (wm.Buttons.isPressed(CButtons::BUTTON_RIGHT))
+                gameAction.brush.color = colorMap[++colorIndex%6];
+            if (wm.Buttons.isPressed(CButtons::BUTTON_LEFT))
+            {
+                --colorIndex;
+                if (colorIndex < 0) colorIndex = 5;
+                gameAction.brush.color = colorMap[colorIndex];
             }
         }
     }
 }
+
+
 
 void GameActionControllerWiimote::connectToWiimotes(int numWiimotes, int timeout)
 {

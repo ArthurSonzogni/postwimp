@@ -22,7 +22,7 @@ class GameAction
             Idle
         };
         
-        struct Pencil 
+        struct Brush
         {
             glm::vec3 position;
             uint32_t color;
@@ -30,7 +30,7 @@ class GameAction
             float strength;
         };
 
-        Pencil pencil = { {0.0,0.0,0.0}, 0xFF0000FF, 1.0, 1.0 };
+        Brush brush = { {0.0,0.0,0.0}, 0xFF0000FF, 1.0, 1.0 };
 
         // state of the GameAction
         Action action;

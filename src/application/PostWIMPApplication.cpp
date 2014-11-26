@@ -86,13 +86,13 @@ void PostWIMPApplication::step()
     /*static int colorIndex = 0;
     if (Input::isKeyPressed(GLFW_KEY_SPACE))
         //currentColor = colorMap[++colorIndex%6];
-        gameAction.pencil.color = colorMap[++colorIndex%6];*/
+        gameAction.brush.color = colorMap[++colorIndex%6];*/
 
-    const int T = 10 * gameAction.pencil.size;
+    const int T = 10 * gameAction.brush.size;
 
-    int px = gameAction.pencil.position.x;
-    int py = gameAction.pencil.position.y;
-    int pz = gameAction.pencil.position.z;
+    int px = gameAction.brush.position.x;
+    int py = gameAction.brush.position.y;
+    int pz = gameAction.brush.position.z;
 
     if (gameAction.action == GameAction::Add)
         for(int x = -T/2; x<=T/2; ++x)
@@ -100,7 +100,7 @@ void PostWIMPApplication::step()
                 for(int z = -T/2; z<=T/2; ++z)
                 {
                     float level = x*x+y*y+z*z;
-                    level *= 0.3 * gameAction.pencil.strength;
+                    level *= 0.3 * gameAction.brush.strength;
                     level = exp(-level);
                     level *= 3.0;
                     if (level>1.0) level=1.0;
@@ -108,7 +108,7 @@ void PostWIMPApplication::step()
                     int yy = py + y;
                     int zz = pz + z;
                     if (xx>=1 and xx<H and yy>=1 and yy<H and zz>1 and zz<H)
-                        voxelMap.lerp(xx,yy,zz,Voxel(gameAction.pencil.color,255),level);
+                        voxelMap.lerp(xx,yy,zz,Voxel(gameAction.brush.color,255),level);
                 }
     else if (gameAction.action == GameAction::Remove)
         for(int x = -T/2; x<=T/2; ++x)
@@ -116,7 +116,7 @@ void PostWIMPApplication::step()
                 for(int z = -T/2; z<=T/2; ++z)
                 {
                     float level = x*x+y*y+z*z;
-                    level *= 0.3 * gameAction.pencil.strength;
+                    level *= 0.3 * gameAction.brush.strength;
                     level = exp(-level);
                     level *= 3.0;
                     if (level>1.0) level=1.0;
@@ -124,7 +124,7 @@ void PostWIMPApplication::step()
                     int yy = py + y;
                     int zz = pz + z;
                     if (xx>=1 and xx<H and yy>=1 and yy<H and zz>1 and zz<H)        
-                        voxelMap.lerpDensity(xx,yy,zz,Voxel(gameAction.pencil.color,0),level);
+                        voxelMap.lerpDensity(xx,yy,zz,Voxel(gameAction.brush.color,0),level);
                 }
 
     // update the modified region
