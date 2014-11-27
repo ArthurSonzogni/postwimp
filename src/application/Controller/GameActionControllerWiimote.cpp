@@ -8,14 +8,14 @@
 static const int WIIMOTE_LED_MAP[4] = {CWiimote::LED_1, CWiimote::LED_2, CWiimote::LED_3, CWiimote::LED_4};
 
 static const uint32_t colorMap[]=
-    {
-        0xFF0000FF,
-        0x00FF00FF,
-        0x0000FFFF,
-        0x00FFFFFF,
-        0xFF00FFFF,
-        0xFFFF00FF,
-    };
+{
+    0xFF0000FF,
+    0x00FF00FF,
+    0x0000FFFF,
+    0x00FFFFFF,
+    0xFF00FFFF,
+    0xFFFF00FF,
+};
 static int colorIndex = 0;
 
 
@@ -35,57 +35,68 @@ void GameActionControllerWiimote::update(GameAction& gameAction, Application& ap
     for(auto i = wiimotes.begin(); i != wiimotes.end(); ++i)
     {
         CWiimote & wm = *i;
-        int exType = wm.ExpansionDevice.GetType();
+        /*int exType = wm.ExpansionDevice.GetType();
         if(exType == wm.ExpansionDevice.TYPE_NUNCHUK)
         {
             CNunchuk &nc = wm.ExpansionDevice.Nunchuk;
 
             //if(nc.Buttons.isPressed(CNunchukButtons::BUTTON_C))
             //TODO: remove buttons and use tracker
-            /*if(nc.Buttons.isPressed(CNunchukButtons::BUTTON_Z))
-            {
-                if (wm.Buttons.isHeld(CButtons::BUTTON_LEFT))
-                    gameAction.view = glm::translate(glm::mat4(1.0),glm::vec3(+tDelta,0.0,0.0))*gameAction.view;
-                if (wm.Buttons.isHeld(CButtons::BUTTON_RIGHT))
-                    gameAction.view = glm::translate(glm::mat4(1.0),glm::vec3(-tDelta,0.0,0.0))*gameAction.view;
-                if (wm.Buttons.isHeld(CButtons::BUTTON_UP))
-                    gameAction.view = glm::translate(glm::mat4(1.0),glm::vec3(0.0,0.0,+tDelta))*gameAction.view;
-                if (wm.Buttons.isHeld(CButtons::BUTTON_DOWN))
-                    gameAction.view = glm::translate(glm::mat4(1.0),glm::vec3(0.0,-tDelta,0.0))*gameAction.view;
-            }
+            if(nc.Buttons.isPressed(CNunchukButtons::BUTTON_Z))
+              {
+              if (wm.Buttons.isHeld(CButtons::BUTTON_LEFT))
+              gameAction.view = glm::translate(glm::mat4(1.0),glm::vec3(+tDelta,0.0,0.0))*gameAction.view;
+              if (wm.Buttons.isHeld(CButtons::BUTTON_RIGHT))
+              gameAction.view = glm::translate(glm::mat4(1.0),glm::vec3(-tDelta,0.0,0.0))*gameAction.view;
+              if (wm.Buttons.isHeld(CButtons::BUTTON_UP))
+              gameAction.view = glm::translate(glm::mat4(1.0),glm::vec3(0.0,0.0,+tDelta))*gameAction.view;
+              if (wm.Buttons.isHeld(CButtons::BUTTON_DOWN))
+              gameAction.view = glm::translate(glm::mat4(1.0),glm::vec3(0.0,-tDelta,0.0))*gameAction.view;
+              }
+              else
+              {
+              if (wm.Buttons.isHeld(CButtons::BUTTON_LEFT))
+              gameAction.view = glm::rotate(glm::mat4(1.0),rDelta,glm::vec3(-1.0,0.0,0.0))*gameAction.view;
+              if (wm.Buttons.isHeld(CButtons::BUTTON_RIGHT))
+              gameAction.view = glm::rotate(glm::mat4(1.0),rDelta,glm::vec3(+1.0,0.0,0.0))*gameAction.view;
+              if (wm.Buttons.isHeld(CButtons::BUTTON_UP))
+              gameAction.view = glm::rotate(glm::mat4(1.0),rDelta,glm::vec3(0.0,0.0,+1.0))*gameAction.view;
+              if (wm.Buttons.isHeld(CButtons::BUTTON_DOWN))
+              gameAction.view = glm::rotate(glm::mat4(1.0),rDelta,glm::vec3(0.0,0.0,-1.0))*gameAction.view;
+              }
+        }*/
+
+        if (wm.Buttons.isHeld(CButtons::BUTTON_B))
+        {
+            std::cout << "B" << std::endl;
+            if (wm.Buttons.isHeld(CButtons::BUTTON_A))
+                gameAction.action = GameAction::Remove;
             else
-            {
-                if (wm.Buttons.isHeld(CButtons::BUTTON_LEFT))
-                    gameAction.view = glm::rotate(glm::mat4(1.0),rDelta,glm::vec3(-1.0,0.0,0.0))*gameAction.view;
-                if (wm.Buttons.isHeld(CButtons::BUTTON_RIGHT))
-                    gameAction.view = glm::rotate(glm::mat4(1.0),rDelta,glm::vec3(+1.0,0.0,0.0))*gameAction.view;
-                if (wm.Buttons.isHeld(CButtons::BUTTON_UP))
-                    gameAction.view = glm::rotate(glm::mat4(1.0),rDelta,glm::vec3(0.0,0.0,+1.0))*gameAction.view;
-                if (wm.Buttons.isHeld(CButtons::BUTTON_DOWN))
-                    gameAction.view = glm::rotate(glm::mat4(1.0),rDelta,glm::vec3(0.0,0.0,-1.0))*gameAction.view;
-            }*/
+                gameAction.action = GameAction::Add;
+        }
 
-            //TODO: tester les valeurs
-            if (wm.Buttons.isPressed(CButtons::BUTTON_PLUS))
-                gameAction.brush.size += 0.1;
-            if (wm.Buttons.isPressed(CButtons::BUTTON_MINUS))
-                gameAction.brush.size -= 0.1;
+        //std::cout << (wm.Buttons.isPressed(CButtons::BUTTON_PLUS)) << std::endl;
 
-            //TODO: tester les valeurs
-            if (wm.Buttons.isPressed(CButtons::BUTTON_UP))
-                gameAction.brush.strength += 0.1;
-            if (wm.Buttons.isPressed(CButtons::BUTTON_DOWN))
-                gameAction.brush.strength -= 0.1;
-           
-            //TODO: tester si ça marche bien 
-            if (wm.Buttons.isPressed(CButtons::BUTTON_RIGHT))
-                gameAction.brush.color = colorMap[++colorIndex%6];
-            if (wm.Buttons.isPressed(CButtons::BUTTON_LEFT))
-            {
-                --colorIndex;
-                if (colorIndex < 0) colorIndex = 5;
-                gameAction.brush.color = colorMap[colorIndex];
-            }
+        //TODO: tester les valeurs
+        if (wm.Buttons.isPressed(CButtons::BUTTON_PLUS))
+            gameAction.brush.size += 0.1;
+        if (wm.Buttons.isPressed(CButtons::BUTTON_MINUS))
+            gameAction.brush.size -= 0.1;
+
+        //TODO: tester les valeurs
+        if (wm.Buttons.isPressed(CButtons::BUTTON_UP))
+            gameAction.brush.strength += 0.1;
+        if (wm.Buttons.isPressed(CButtons::BUTTON_DOWN))
+            gameAction.brush.strength -= 0.1;
+
+        //TODO: tester si ça marche bien 
+        if (wm.Buttons.isPressed(CButtons::BUTTON_RIGHT))
+            gameAction.brush.color = colorMap[++colorIndex%6];
+        if (wm.Buttons.isPressed(CButtons::BUTTON_LEFT))
+        {
+            --colorIndex;
+            if (colorIndex < 0) colorIndex = 5;
+            gameAction.brush.color = colorMap[colorIndex];
         }
     }
 }
@@ -94,6 +105,8 @@ void GameActionControllerWiimote::update(GameAction& gameAction, Application& ap
 
 void GameActionControllerWiimote::connectToWiimotes(int numWiimotes, int timeout)
 {
+    if (wii)
+        delete wii;
     wii = new CWii(numWiimotes);
     std::vector<CWiimote>::iterator i;
     int numFound;
@@ -112,7 +125,7 @@ void GameActionControllerWiimote::connectToWiimotes(int numWiimotes, int timeout
     // Connect to the wiimote
     wiimotes = wii->Connect();
 
-	std::cout << "Connected to " << (unsigned int)wiimotes.size() << " wiimotes" << endl;
+    std::cout << "Connected to " << (unsigned int)wiimotes.size() << " wiimotes" << endl;
 
     // Setup the wiimotes
     for(index = 0, i = wiimotes.begin(); i != wiimotes.end(); ++i, ++index)
