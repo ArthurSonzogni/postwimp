@@ -78,18 +78,18 @@ void GameActionControllerOptiTrack::update(GameAction& gameAction, Application& 
             auto rigid = frame.rigidBodies();
             for(auto it = rigid.begin(); it!=rigid.end(); ++it)
             {
-                if (it->trackingValid())
+                if (it->trackingValid() && it->id() == 3)
                 {
                     auto pos = (*it).location();
                     gameAction.brush.position.x = pos.x * 64.0 + 64.0; 
                     gameAction.brush.position.y = pos.y * 64.0 + 64.0; 
                     gameAction.brush.position.z = pos.z * 64.0 + 64.0; 
-                    static int i = 0;
+                    /*static int i = 0;
                     if (i++%400 < 200)
                     gameAction.action = GameAction::Add;
                     else
                     gameAction.action = GameAction::Remove;
-
+                    */
 
                     //std::cout << pos.x << std::endl;
                     //std::cout << pos.y << std::endl;
