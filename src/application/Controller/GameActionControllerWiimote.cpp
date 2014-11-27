@@ -23,13 +23,15 @@ GameActionControllerWiimote::GameActionControllerWiimote() :
     wiimotes(0)
 {
     // Connect to the wiimote(s)
-    connectToWiimotes(1, 2);
+    connectToWiimotes(1, 3);
 }
 
 void GameActionControllerWiimote::update(GameAction& gameAction, Application& application)
 {
     float tDelta = 40.0 * application.getFrameDeltaTime();
     float rDelta = 2.0 * application.getFrameDeltaTime();
+
+    getWiimoteUpdates();
 
     // Handle Wiimote / Nunchuk
     for(auto i = wiimotes.begin(); i != wiimotes.end(); ++i)
@@ -68,7 +70,6 @@ void GameActionControllerWiimote::update(GameAction& gameAction, Application& ap
 
         if (wm.Buttons.isHeld(CButtons::BUTTON_B))
         {
-            std::cout << "B" << std::endl;
             if (wm.Buttons.isHeld(CButtons::BUTTON_A))
                 gameAction.action = GameAction::Remove;
             else
@@ -78,18 +79,17 @@ void GameActionControllerWiimote::update(GameAction& gameAction, Application& ap
         //std::cout << (wm.Buttons.isPressed(CButtons::BUTTON_PLUS)) << std::endl;
 
         //TODO: tester les valeurs
-        if (wm.Buttons.isPressed(CButtons::BUTTON_PLUS))
-            gameAction.brush.size += 0.1;
-        if (wm.Buttons.isPressed(CButtons::BUTTON_MINUS))
-            gameAction.brush.size -= 0.1;
+        if (wm.Buttons.isHeld(CButtons::BUTTON_PLUS))
+            gameAction.brush.size *= 1.001;
+        if (wm.Buttons.isHeld(CButtons::BUTTON_MINUS))
+            gameAction.brush.size /= 1.005;
 
         //TODO: tester les valeurs
-        if (wm.Buttons.isPressed(CButtons::BUTTON_UP))
-            gameAction.brush.strength += 0.1;
-        if (wm.Buttons.isPressed(CButtons::BUTTON_DOWN))
-            gameAction.brush.strength -= 0.1;
+        if (wm.Buttons.isHeld(CButtons::BUTTON_UP))
+            gameAction.brush.strength *= 1.005;
+        if (wm.Buttons.isHeld(CButtons::BUTTON_DOWN))
+            gameAction.brush.strength /= 1.005;
 
-        //TODO: tester si ça marche bien 
         if (wm.Buttons.isPressed(CButtons::BUTTON_RIGHT))
             gameAction.brush.color = colorMap[++colorIndex%6];
         if (wm.Buttons.isPressed(CButtons::BUTTON_LEFT))
@@ -98,6 +98,22 @@ void GameActionControllerWiimote::update(GameAction& gameAction, Application& ap
             if (colorIndex < 0) colorIndex = 5;
             gameAction.brush.color = colorMap[colorIndex];
         }
+
+        if(wm.Buttons.isPressed(CButtons::BUTTON_HOME))
+        {
+            gameAction.brush.size = 1.0;
+            gameAction.brush.strength = 1.0;
+            colorIndex = 0;
+            gameAction.brush.color = colorMap[0];
+        }
+
+        static int j = 0;
+        if (j++%1000) 
+        {
+            std::cout << "SIZE=" << gameAction.brush.size << std::endl;
+            std::cout << "STRENGTH=" << gameAction.brush.strength << std::endl;
+        }
+
     }
 }
 
@@ -180,7 +196,7 @@ void GameActionControllerWiimote::getWiimoteUpdates()
     }
 
     //Poll the wiimotes to get the status like pitch or roll
-    if(wii->Poll())
+    while(wii->Poll())
     {
         for(auto i = wiimotes.begin(); i != wiimotes.end(); ++i)
         {

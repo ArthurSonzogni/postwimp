@@ -51,7 +51,7 @@ void PostWIMPApplication::step()
         ok = false;
         for(int z = 1 ; z<H; ++z)
         {
-            cout<<z<<endl;
+            //cout<<z<<endl;
             for(int y = 1 ; y<H; ++y)
                 for(int x = 1 ; x<H; ++x)
                 {
