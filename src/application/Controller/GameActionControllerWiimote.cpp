@@ -20,8 +20,7 @@ static int colorIndex = 0;
 
 
 GameActionControllerWiimote::GameActionControllerWiimote() :
-    wiimotes(0),
-    wii(NULL)
+    wiimotes(0)
 {
     // Connect to the wiimote(s)
     connectToWiimotes(1, 3);
@@ -77,19 +76,15 @@ void GameActionControllerWiimote::update(GameAction& gameAction, Application& ap
                 gameAction.action = GameAction::Add;
         }
 
-        //std::cout << (wm.Buttons.isPressed(CButtons::BUTTON_PLUS)) << std::endl;
-
-        //TODO: tester les valeurs
         if (wm.Buttons.isHeld(CButtons::BUTTON_PLUS))
-            gameAction.brush.size *= 1.001;
+            gameAction.brush.size *= 1.005;
         if (wm.Buttons.isHeld(CButtons::BUTTON_MINUS))
             gameAction.brush.size /= 1.005;
 
-        //TODO: tester les valeurs
         if (wm.Buttons.isHeld(CButtons::BUTTON_UP))
-            gameAction.brush.strength *= 1.005;
+            gameAction.brush.strength *= 1.01;
         if (wm.Buttons.isHeld(CButtons::BUTTON_DOWN))
-            gameAction.brush.strength /= 1.005;
+            gameAction.brush.strength /= 1.01;
 
         if (wm.Buttons.isPressed(CButtons::BUTTON_RIGHT))
             gameAction.brush.color = colorMap[++colorIndex%6];
