@@ -29,14 +29,14 @@ GameActionControllerOptiTrack::GameActionControllerOptiTrack(std::string localAd
     commandListener = NULL;
 
     // Use this socket address to send commands to the server.
-    struct sockaddr_in serverCommands = NatNet::createAddress(this->serverAddress, NatNet::commandPort);
+    serverCommands = NatNet::createAddress(this->serverAddress, NatNet::commandPort);
 
     // Create sockets
     sdCommand = NatNet::createCommandSocket(this->localAddress);
     sdData = NatNet::createDataSocket(this->localAddress);
 
     // Y U NO COMPILE?
-    //boost::thread* t = new boost::thread(connectOptiTrack, serverCommands);
+    boost::thread* t = new boost::thread(&GameActionControllerOptiTrack::connectOptiTrack,this);
 }
 
 
@@ -82,7 +82,7 @@ void GameActionControllerOptiTrack::printFrames()
     }
 }
 
-void GameActionControllerOptiTrack::connectOptiTrack(struct sockaddr_in serverCommands)
+void GameActionControllerOptiTrack::connectOptiTrack()
 {
     // Start the CommandListener in a new thread.
     commandListener = new CommandListener(sdCommand);
