@@ -4,6 +4,8 @@
 #include "GameActionController.hpp"
 #include <string>
 
+#include <netinet/in.h>
+
 class FrameListener;
 class CommandListener;
 
@@ -15,10 +17,11 @@ class GameActionControllerOptiTrack : public GameActionController
         virtual void update(GameAction& gameAction, Application& application);
     protected:
         void printFrames();
-        void connectOptiTrack(struct sockaddr_in serverCommands);
+        void connectOptiTrack();
 
         // Addresses
         uint32_t localAddress, serverAddress;    
+        struct sockaddr_in serverCommands;
         // Sockets
         int sdCommand, sdData;
         // Listeners
