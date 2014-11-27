@@ -82,7 +82,6 @@ add_executable(
     ${source_files}
 )
 
-
 # Finding libs
 find_package(OpenGL REQUIRED)
 find_package(glfw3 REQUIRED)
@@ -90,7 +89,10 @@ find_package(GLEW REQUIRED)
 find_package(PolyVox REQUIRED)
 #SET(CMAKE_FIND_FRAMEWORK NEVER)
 find_package(SFML 2 COMPONENTS system REQUIRED)
-#find_package(Boost COMPONENTS program_options system thread REQUIRED)
+#find_package(Bluetooth REQUIRED)
+find_package(WiiCpp REQUIRED)
+find_package(Boost COMPONENTS program_options system thread REQUIRED)
+
 
 #includes
 include_directories(
@@ -99,6 +101,7 @@ include_directories(
     ${GLFW_INCLUDE_DIR}
     ${SFML_INCLUDE_DIR}
     ${PolyVox_INCLUDE_DIRS}
+    ${WIICPP_INCLUDE_DIRS}
     ${Boost_INCLUDE_DIRS}
 )
 
@@ -110,9 +113,9 @@ target_link_libraries(
     ${OPENGL_LIBRARIES}
     ${SFML_LIBRARIES}
     ${PolyVox_LIBRARIES}
+    ${WIICPP_LIBRARIES}
     ${Boost_LIBRARIES}
 )
-
 
 add_custom_target(run
     COMMAND ${EXECUTABLE_OUTPUT_PATH}/${EXEC}

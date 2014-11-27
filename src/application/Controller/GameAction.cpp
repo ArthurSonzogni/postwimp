@@ -8,8 +8,7 @@ GameAction::GameAction():
     view(glm::lookAt(
         glm::vec3(-5.f,-5.f,-5.f),
         glm::vec3( 0.f, 0.f, 0.f),
-        glm::vec3( 0.f, 0.f, 1.f))),
-    pointerPosition(0.f,0.f,0.f)
+        glm::vec3( 0.f, 0.f, 1.f)))
 {}
 
 void GameAction::plugController(GameActionController* controller)

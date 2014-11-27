@@ -8,6 +8,8 @@
 #include "Controller/GameActionControllerKeyboard.hpp"
 #include "Controller/GameActionControllerMouse.hpp"
 #include "Controller/GameActionControllerMouseButton.hpp"
+#include "Controller/GameActionControllerWiimote.hpp"
+#include "Controller/GameActionControllerOptiTrack.hpp"
 
 using namespace std;
 
@@ -23,6 +25,8 @@ PostWIMPApplication::PostWIMPApplication():
     gameAction.plugController(new GameActionControllerKeyboard());
     gameAction.plugController(new GameActionControllerMouse());
     gameAction.plugController(new GameActionControllerMouseButton());
+    gameAction.plugController(new GameActionControllerWiimote());
+    gameAction.plugController(new GameActionControllerOptiTrack("127.0.0.1", "127.0.0.1"));
 }
 
 void PostWIMPApplication::loop()
@@ -66,7 +70,7 @@ void PostWIMPApplication::step()
                     ));
     }
 
-    static const uint32_t colorMap[]=
+    /*static const uint32_t colorMap[]=
     {
         0xFF0000FF,
         0x00FF00FF,
@@ -74,27 +78,29 @@ void PostWIMPApplication::step()
         0x00FFFFFF,
         0xFF00FFFF,
         0xFFFF00FF,
-    };
-    static uint32_t currentColor = 0xFF0000FF;
+    };*/
+    //static uint32_t currentColor = 0xFF0000FF;
 
 
-    static int colorIndex = 0;
+    //TODO: Input dans GameActionControllerXYZ
+    /*static int colorIndex = 0;
     if (Input::isKeyPressed(GLFW_KEY_SPACE))
-        currentColor = colorMap[++colorIndex%6];
+        //currentColor = colorMap[++colorIndex%6];
+        gameAction.brush.color = colorMap[++colorIndex%6];*/
 
-    const int T = 10;
+    const int T = 10 * gameAction.brush.size;
 
-    int px = gameAction.pointerPosition.x;
-    int py = gameAction.pointerPosition.y;
-    int pz = gameAction.pointerPosition.z;
+    int px = gameAction.brush.position.x;
+    int py = gameAction.brush.position.y;
+    int pz = gameAction.brush.position.z;
+
     if (gameAction.action == GameAction::Add)
-    {
         for(int x = -T/2; x<=T/2; ++x)
             for(int y = -T/2; y<=T/2; ++y)
                 for(int z = -T/2; z<=T/2; ++z)
                 {
                     float level = x*x+y*y+z*z;
-                    level *= 0.3;
+                    level *= 0.3 * gameAction.brush.strength;
                     level = exp(-level);
                     level *= 3.0;
                     if (level>1.0) level=1.0;
@@ -102,39 +108,30 @@ void PostWIMPApplication::step()
                     int yy = py + y;
                     int zz = pz + z;
                     if (xx>=1 and xx<H and yy>=1 and yy<H and zz>1 and zz<H)
-                        voxelMap.lerp(xx,yy,zz,Voxel(currentColor,255),level);
+                        voxelMap.lerp(xx,yy,zz,Voxel(gameAction.brush.color,255),level);
                 }
-
-        // update the modified region
-        voxelMapDisplayer.update(PolyVox::Region(
-                    PolyVox::Vector3DInt32(px-T/2,py-T/2,pz-T/2),
-                    PolyVox::Vector3DInt32(px+T/2,py+T/2,pz+T/2)
-                    ));
-    }
     else if (gameAction.action == GameAction::Remove)
-    {
         for(int x = -T/2; x<=T/2; ++x)
             for(int y = -T/2; y<=T/2; ++y)
                 for(int z = -T/2; z<=T/2; ++z)
                 {
                     float level = x*x+y*y+z*z;
-                    level *= 0.3;
+                    level *= 0.3 * gameAction.brush.strength;
                     level = exp(-level);
                     level *= 3.0;
                     if (level>1.0) level=1.0;
                     int xx = px + x;
                     int yy = py + y;
                     int zz = pz + z;
-                    if (xx>=1 and xx<H and yy>=1 and yy<H and zz>1 and zz<H)
-                        voxelMap.lerpDensity(xx,yy,zz,Voxel(currentColor,0.0),level);
+                    if (xx>=1 and xx<H and yy>=1 and yy<H and zz>1 and zz<H)        
+                        voxelMap.lerpDensity(xx,yy,zz,Voxel(gameAction.brush.color,0),level);
                 }
 
-        // update the modified region
-        voxelMapDisplayer.update(PolyVox::Region(
-                    PolyVox::Vector3DInt32(px-T/2,py-T/2,pz-T/2),
-                    PolyVox::Vector3DInt32(px+T/2,py+T/2,pz+T/2)
-                    ));
-    }
+    // update the modified region
+    voxelMapDisplayer.update(PolyVox::Region(
+                PolyVox::Vector3DInt32(px-T/2,py-T/2,pz-T/2),
+                PolyVox::Vector3DInt32(px+T/2,py+T/2,pz+T/2)
+                ));
 
     // print periodically fps
     static float deltaMean = getFrameDeltaTime();
@@ -144,8 +141,8 @@ void PostWIMPApplication::step()
         cout << "fps=" << (int)(1/deltaMean) << endl;
 
 
-        // wireframe mode
-        static bool isWireframeEnabled = false;
+    // wireframe mode
+    static bool isWireframeEnabled = false;
     if (Input::isKeyPressed(GLFW_KEY_V))
     {
         isWireframeEnabled = ! isWireframeEnabled;
