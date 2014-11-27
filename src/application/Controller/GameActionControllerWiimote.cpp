@@ -20,7 +20,8 @@ static int colorIndex = 0;
 
 
 GameActionControllerWiimote::GameActionControllerWiimote() :
-    wiimotes(0)
+    wiimotes(0),
+    wii(NULL)
 {
     // Connect to the wiimote(s)
     connectToWiimotes(1, 3);

@@ -79,6 +79,7 @@ void GameActionControllerOptiTrack::printFrames()
         if( !valid )
             break;
         std::cout << frame << std::endl;
+        auto rigid = frame.rigidBodies();
     }
 }
 
@@ -102,5 +103,6 @@ void GameActionControllerOptiTrack::connectOptiTrack()
     // Start up a FrameListener in a new thread.
     frameListener = new FrameListener(sdData, natNetMajor, natNetMinor);
     frameListener->start();
+    std::cout  << "GameActionControllerOptiTrack::connectOptiTrackEnd" << std::endl;
 }
 
