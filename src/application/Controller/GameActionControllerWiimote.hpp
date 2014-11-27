@@ -8,10 +8,11 @@ class GameActionControllerWiimote : public GameActionController
 {
     public:
         GameActionControllerWiimote();
+        virtual bool reconnect();
         virtual void update(GameAction& gameAction, Application& application);
     
     protected:
-        void connectToWiimotes(int numWiimotes, int timeout);
+        bool connectToWiimotes(int numWiimotes, int timeout);
         void handleWiimoteStatus(CWiimote &wm);
         void handleWiimoteDisconnect(CWiimote &wm);
         void handleWiimoteReadData(CWiimote &wm);

@@ -13,6 +13,7 @@ class GameAction
         GameAction();
         void plugController(GameActionController* controller);
         void unplugController(GameActionController* controller);
+        void reconnectControllers();
         void update(Application& application);
 
         enum Action
