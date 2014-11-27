@@ -23,8 +23,13 @@ GameActionControllerWiimote::GameActionControllerWiimote() :
     wiimotes(0),
     wii(NULL)
 {
-    // Connect to the wiimote(s)
+    controllerName = "Wiimote";
     connectToWiimotes(1, 3);
+}
+        
+bool GameActionControllerWiimote::reconnect()
+{
+    return connectToWiimotes(1, 1);
 }
 
 void GameActionControllerWiimote::update(GameAction& gameAction, Application& application)
@@ -105,7 +110,7 @@ void GameActionControllerWiimote::update(GameAction& gameAction, Application& ap
         }
 
         static int j = 0;
-        if (j++%1000) 
+        if (j++%100 == 0) 
         {
             std::cout << "SIZE=" << gameAction.brush.size << std::endl;
             std::cout << "STRENGTH=" << gameAction.brush.strength << std::endl;
@@ -116,7 +121,7 @@ void GameActionControllerWiimote::update(GameAction& gameAction, Application& ap
 
 
 
-void GameActionControllerWiimote::connectToWiimotes(int numWiimotes, int timeout)
+bool GameActionControllerWiimote::connectToWiimotes(int numWiimotes, int timeout)
 {
     if (wii)
         delete wii;

@@ -13,6 +13,7 @@ class GameActionControllerKeyboard : public GameActionController
     protected:
         enum Keys {
             KEY_ESCAPE,
+            KEY_RECONNECT,
             KEY_CAMERA_LEFT,
             KEY_CAMERA_RIGHT,
             KEY_CAMERA_FORWARD,
@@ -30,7 +31,7 @@ class GameActionControllerKeyboard : public GameActionController
             KEY_SAVE
         };
 
-        void assignKey();
+        void assignKeys();
         std::map<Keys,int> keys;
 };
 

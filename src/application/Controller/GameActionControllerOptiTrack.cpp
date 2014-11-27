@@ -25,6 +25,7 @@
 GameActionControllerOptiTrack::GameActionControllerOptiTrack(std::string localAddress, std::string serverAddress) :
     localAddress(inet_addr(localAddress.c_str())), serverAddress(inet_addr(serverAddress.c_str()))
 {
+    controllerName = "Opti Track";
     frameListener = NULL;
     commandListener = NULL;
 

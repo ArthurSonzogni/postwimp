@@ -7,6 +7,7 @@
 
 GameActionControllerMouseButton::GameActionControllerMouseButton()
 {
+    controllerName = "Mouse Button";
 }
 
 

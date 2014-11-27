@@ -7,6 +7,7 @@
 
 GameActionControllerMouse::GameActionControllerMouse()
 {
+    controllerName = "Mouse";
 }
 
 

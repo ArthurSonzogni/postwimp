@@ -1,6 +1,7 @@
 #include "GameAction.hpp"
 #include "GameActionController.hpp"
 #include "system/Application.hpp"
+#include <iostream>
 
 GameAction::GameAction():
     action(Idle),
@@ -21,11 +22,21 @@ void GameAction::unplugController(GameActionController* controller)
     controllerList.remove(controller);
 }
 
+void GameAction::reconnectControllers()
+{
+    std::cout << "Reconnecting to controllers..." << std::endl;
+    for (auto it = controllerList.begin(); it != controllerList.end(); ++it)
+    {
+        if (! (**it).reconnect())
+            std::cout << "Could not reconnect to controller " << (**it).controllerName << "!" << std::endl;
+    }
+}
+
 void GameAction::update(Application& application)
 {
     projection = glm::perspective(70.0f, application.getWindowRatio(), 0.1f, 10000.f);
 
-    for(auto it = controllerList.begin(); it!= controllerList.end(); ++it)
+    for(auto it = controllerList.begin(); it != controllerList.end(); ++it)
     {
         (**it).update(*this,application); 
     }

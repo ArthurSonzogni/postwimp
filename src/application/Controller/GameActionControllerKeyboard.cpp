@@ -7,12 +7,14 @@
 
 GameActionControllerKeyboard::GameActionControllerKeyboard()
 {
-    assignKey();
+    controllerName = "Keyboard";
+    assignKeys();
 }
 
-void GameActionControllerKeyboard::assignKey()
+void GameActionControllerKeyboard::assignKeys()
 {
     keys[KEY_ESCAPE] = GLFW_KEY_ESCAPE;
+    keys[KEY_RECONNECT] = GLFW_KEY_R;
     keys[KEY_CAMERA_LEFT] = GLFW_KEY_A;
     keys[KEY_CAMERA_RIGHT] = GLFW_KEY_D;
     keys[KEY_CAMERA_FORWARD] = GLFW_KEY_W;
@@ -59,6 +61,10 @@ void GameActionControllerKeyboard::update(GameAction& gameAction, Application& a
         gameAction.view= glm::rotate(glm::mat4(1.0),rDelta,glm::vec3(0.0,0.0,-1.0))*gameAction.view;
     if (Input::isKeyHold(keys[KEY_CAMERA_TURN_ZP]))
         gameAction.view= glm::rotate(glm::mat4(1.0),rDelta,glm::vec3(0.0,0.0,+1.0))*gameAction.view;
+
+    // reconnect controllers
+    if (Input::isKeyPressed(keys[KEY_RECONNECT]))
+        gameAction.reconnectControllers();
 
     // escape
     if (Input::isKeyPressed(keys[KEY_ESCAPE]))
