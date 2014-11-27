@@ -4,6 +4,7 @@
 #include <wiicpp.h>
 #include <iostream>
 #include <unistd.h>
+#include <math.h>
 
 static const int WIIMOTE_LED_MAP[4] = {CWiimote::LED_1, CWiimote::LED_2, CWiimote::LED_3, CWiimote::LED_4};
 
@@ -43,14 +44,28 @@ void GameActionControllerWiimote::update(GameAction& gameAction, Application& ap
     for(auto i = wiimotes.begin(); i != wiimotes.end(); ++i)
     {
         CWiimote & wm = *i;
-        /*int exType = wm.ExpansionDevice.GetType();
+        int exType = wm.ExpansionDevice.GetType();
+            
+        float angle, magnitude;
+        
         if(exType == wm.ExpansionDevice.TYPE_NUNCHUK)
         {
             CNunchuk &nc = wm.ExpansionDevice.Nunchuk;
 
+            nc.Joystick.GetPosition(angle, magnitude);
+            if (! std::isnan(angle))
+            {
+                angle -= 90.0;
+                angle *= -M_PI/180.0;
+                float sa = sin(angle);
+                if (sa > 0.0)
+                    gameAction.brush.size *= 1.0 + (.005 * magnitude * sa);
+                else if (sa < 0.0)
+                    gameAction.brush.size *= 1.0 - (.005 * magnitude * (-sa));
+            }
             //if(nc.Buttons.isPressed(CNunchukButtons::BUTTON_C))
             //TODO: remove buttons and use tracker
-            if(nc.Buttons.isPressed(CNunchukButtons::BUTTON_Z))
+            /*if(nc.Buttons.isPressed(CNunchukButtons::BUTTON_Z))
               {
               if (wm.Buttons.isHeld(CButtons::BUTTON_LEFT))
               gameAction.view = glm::translate(glm::mat4(1.0),glm::vec3(+tDelta,0.0,0.0))*gameAction.view;
@@ -71,8 +86,8 @@ void GameActionControllerWiimote::update(GameAction& gameAction, Application& ap
               gameAction.view = glm::rotate(glm::mat4(1.0),rDelta,glm::vec3(0.0,0.0,+1.0))*gameAction.view;
               if (wm.Buttons.isHeld(CButtons::BUTTON_DOWN))
               gameAction.view = glm::rotate(glm::mat4(1.0),rDelta,glm::vec3(0.0,0.0,-1.0))*gameAction.view;
-              }
-        }*/
+              }*/
+        }
 
         if (wm.Buttons.isHeld(CButtons::BUTTON_B))
         {
@@ -112,8 +127,10 @@ void GameActionControllerWiimote::update(GameAction& gameAction, Application& ap
         static int j = 0;
         if (j++%100 == 0) 
         {
-            std::cout << "SIZE=" << gameAction.brush.size << std::endl;
-            std::cout << "STRENGTH=" << gameAction.brush.strength << std::endl;
+            std::cout << "Brush size : " << gameAction.brush.size << std::endl;
+            std::cout << "Brush strength : " << gameAction.brush.strength << std::endl;
+            std::cout << "Joystick angle : " << angle*180.0/M_PI << "°" << std::endl;
+            std::cout << "Joystick magnitude :" << magnitude << std::endl;
         }
 
     }
