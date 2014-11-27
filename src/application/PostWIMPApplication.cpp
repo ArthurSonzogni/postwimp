@@ -26,7 +26,7 @@ PostWIMPApplication::PostWIMPApplication():
     gameAction.plugController(new GameActionControllerMouse());
     gameAction.plugController(new GameActionControllerMouseButton());
     gameAction.plugController(new GameActionControllerWiimote());
-    gameAction.plugController(new GameActionControllerOptiTrack("127.0.0.1", "127.0.0.1"));
+    gameAction.plugController(new GameActionControllerOptiTrack("10.10.0.4", "10.10.0.254"));
 }
 
 void PostWIMPApplication::loop()
