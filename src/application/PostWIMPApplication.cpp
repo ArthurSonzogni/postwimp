@@ -51,7 +51,7 @@ void PostWIMPApplication::step()
         ok = false;
         for(int z = 1 ; z<H; ++z)
         {
-            cout<<z<<endl;
+            //cout<<z<<endl;
             for(int y = 1 ; y<H; ++y)
                 for(int x = 1 ; x<H; ++x)
                 {
@@ -84,7 +84,7 @@ void PostWIMPApplication::step()
         for(int z = -T/2; z<=T/2; ++z)
         {
             float level = x*x+y*y+z*z;
-            level *= 0.03 * T;;
+            level *= 3.0 / T;
             level = exp(-level);
             level *= 3.0 * gameAction.brush.strength;
             if (level>1.0) level=1.0;
@@ -107,7 +107,7 @@ void PostWIMPApplication::step()
         for(int z = -T/2; z<=T/2; ++z)
         {
             float level = x*x+y*y+z*z;
-            level *= 0.03 * T;;
+            level *= 0.03 / T;
             level = exp(-level);
             level *= 3.0 * gameAction.brush.strength;
             if (level>1.0) level=1.0;
