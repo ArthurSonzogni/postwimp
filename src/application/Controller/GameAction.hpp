@@ -7,6 +7,7 @@
 class GameActionController;
 class Application;
 
+
 class GameAction
 {
     public:
@@ -23,6 +24,8 @@ class GameAction
             Idle
         };
         
+        Action action;
+
         struct Brush
         {
             glm::vec3 position;
@@ -33,8 +36,15 @@ class GameAction
 
         Brush brush = { {0.0,0.0,0.0}, 0xFF0000FF, 1.0, 1.0 };
 
-        // state of the GameAction
-        Action action;
+        enum Event
+        {
+            BrushEntersVolume,
+            BrushLeavesVolume,
+            LostBrushTracking,
+            RecoveredBrushTracking
+        };
+
+        std::list<Event> events;
 
         glm::mat4 projection;
         glm::mat4 view;

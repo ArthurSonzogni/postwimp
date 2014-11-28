@@ -26,7 +26,7 @@ PostWIMPApplication::PostWIMPApplication():
     //gameAction.plugController(new GameActionControllerMouse());
     gameAction.plugController(new GameActionControllerMouseButton());
     gameAction.plugController(new GameActionControllerWiimote());
-    gameAction.plugController(new GameActionControllerOptiTrack("10.10.0.6", "10.10.0.254"));
+    gameAction.plugController(new GameActionControllerOptiTrack("10.10.0.6", "10.10.0.254")); // TODO: get local IP programmatically
 }
 
 void PostWIMPApplication::loop()
@@ -148,6 +148,27 @@ void PostWIMPApplication::step()
             glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
         }
     }
+    
+    // detect if brush is in the volume
+    // TODO: Arthur aides moi ici!!!
+    /*static bool brushWasInVolume = false;
+    auto brushVoxel = voxelMap.get(px,py,pz);
+    if (brushVoxel.convertToDensity() >= brushVoxel.getThreshold())
+    {
+        if (! brushWasInVolume)
+        {
+            GameAction::events.push_back(GameAction::BrushEntersVolume);
+            brushWasInVolume = true;
+        }
+    }
+    else
+    {
+        if (brushWasInVolume)
+        {
+            GameAction::events.push_back(GameAction::BrushLeavesVolume);
+            brushWasInVolume = false;
+        }
+    }*/
 }
 
 void PostWIMPApplication::draw()

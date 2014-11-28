@@ -52,6 +52,7 @@ void GameActionControllerWiimote::update(GameAction& gameAction, Application& ap
         {
             CNunchuk &nc = wm.ExpansionDevice.Nunchuk;
 
+            // Size using joystick
             nc.Joystick.GetPosition(angle, magnitude);
             if (! std::isnan(angle))
             {
@@ -63,8 +64,8 @@ void GameActionControllerWiimote::update(GameAction& gameAction, Application& ap
                 else if (sa < 0.0)
                     gameAction.brush.size *= 1.0 - (.005 * magnitude * (-sa));
             }
+
             //if(nc.Buttons.isPressed(CNunchukButtons::BUTTON_C))
-            //TODO: remove buttons and use tracker
             /*if(nc.Buttons.isPressed(CNunchukButtons::BUTTON_Z))
               {
               if (wm.Buttons.isHeld(CButtons::BUTTON_LEFT))
@@ -89,6 +90,7 @@ void GameActionControllerWiimote::update(GameAction& gameAction, Application& ap
               }*/
         }
 
+        // Add / Remove
         if (wm.Buttons.isHeld(CButtons::BUTTON_B))
         {
             if (wm.Buttons.isHeld(CButtons::BUTTON_A))
@@ -97,16 +99,19 @@ void GameActionControllerWiimote::update(GameAction& gameAction, Application& ap
                 gameAction.action = GameAction::Add;
         }
 
+        // Size
         if (wm.Buttons.isHeld(CButtons::BUTTON_PLUS))
             gameAction.brush.size *= 1.005;
         if (wm.Buttons.isHeld(CButtons::BUTTON_MINUS))
             gameAction.brush.size /= 1.005;
 
+        // Strength
         if (wm.Buttons.isHeld(CButtons::BUTTON_UP))
             gameAction.brush.strength *= 1.01;
         if (wm.Buttons.isHeld(CButtons::BUTTON_DOWN))
             gameAction.brush.strength /= 1.01;
 
+        // Color
         if (wm.Buttons.isPressed(CButtons::BUTTON_RIGHT))
             gameAction.brush.color = colorMap[++colorIndex%6];
         if (wm.Buttons.isPressed(CButtons::BUTTON_LEFT))
@@ -116,6 +121,7 @@ void GameActionControllerWiimote::update(GameAction& gameAction, Application& ap
             gameAction.brush.color = colorMap[colorIndex];
         }
 
+        // Reset brush
         if(wm.Buttons.isPressed(CButtons::BUTTON_HOME))
         {
             gameAction.brush.size = 1.0;
@@ -124,6 +130,7 @@ void GameActionControllerWiimote::update(GameAction& gameAction, Application& ap
             gameAction.brush.color = colorMap[0];
         }
 
+        // Debug
         static int j = 0;
         if (j++%100 == 0) 
         {
@@ -132,7 +139,32 @@ void GameActionControllerWiimote::update(GameAction& gameAction, Application& ap
             std::cout << "Joystick angle : " << angle*180.0/M_PI << "°" << std::endl;
             std::cout << "Joystick magnitude :" << magnitude << std::endl;
         }
+    }
+}
 
+void GameActionControllerWiimote::processEvents(GameAction& gameAction, Application& application, std::list<GameAction::Event> events)
+{
+    for (GameAction::Event e : events)
+    {
+        switch (e)
+        {
+            case GameAction::BrushEntersVolume:
+                for(auto i = wiimotes.begin(); i != wiimotes.end(); ++i)
+                {
+                    CWiimote & wm = *i;
+                    wm.SetRumbleMode(CWiimote::ON);
+                }
+                break;
+            case GameAction::BrushLeavesVolume:
+                for(auto i = wiimotes.begin(); i != wiimotes.end(); ++i)
+                {
+                    CWiimote & wm = *i;
+                    wm.SetRumbleMode(CWiimote::OFF);
+                }
+                break;
+            default:
+                break;
+        }
     }
 }
 
@@ -176,6 +208,8 @@ bool GameActionControllerWiimote::connectToWiimotes(int numWiimotes, int timeout
         usleep(200000);
         wiimote.SetRumbleMode(CWiimote::OFF);
     }
+
+    return (wiimotes.size()>0);
 }
 
 void GameActionControllerWiimote::handleWiimoteStatus(CWiimote &wm)

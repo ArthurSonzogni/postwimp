@@ -38,6 +38,8 @@ void GameAction::update(Application& application)
 
     for(auto it = controllerList.begin(); it != controllerList.end(); ++it)
     {
-        (**it).update(*this,application); 
+        (**it).update(*this,application);
+        (**it).processEvents(*this,application,events);
+        events.clear();
     }
 }
