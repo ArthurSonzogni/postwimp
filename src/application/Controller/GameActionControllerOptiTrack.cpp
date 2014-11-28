@@ -22,8 +22,33 @@
 #include <time.h>
 
 
-GameActionControllerOptiTrack::GameActionControllerOptiTrack(std::string localAddress, std::string serverAddress) :
-    localAddress(inet_addr(localAddress.c_str())), serverAddress(inet_addr(serverAddress.c_str()))
+bool checkServerConnectivity(int sock, struct sockaddr_in addr)
+{
+    if ((sock=socket(AF_INET, SOCK_DGRAM, 0)) < 0)
+    {
+        return false;
+    }
+
+    if (connect(sock, (struct sockaddr *) &addr, sizeof(addr)) < 0)
+    {
+        return false;
+    }
+}
+
+struct in_addr getLocalAddress(int sock)
+{
+    struct sockaddr_in addr;
+    socklen_t len = sizeof(struct sockaddr);
+    getsockname(sock, (struct sockaddr *) &addr, &len);
+    std::cout << "Local IP address used to communicate with Opti Track : " << inet_ntoa(addr.sin_addr) << std::endl; 
+    //printf("IP used to communicate = %s:%d\n", inet_ntoa(addr.sin_addr), ntohs(addr.sin_port));
+    return addr.sin_addr;
+}
+
+
+
+GameActionControllerOptiTrack::GameActionControllerOptiTrack(/*std::string localAddress, */std::string serverAddress) :
+    /*localAddress(inet_addr(localAddress.c_str())), */serverAddress(inet_addr(serverAddress.c_str()))
 {
     controllerName = "Opti Track";
     frameListener = NULL;
@@ -32,12 +57,23 @@ GameActionControllerOptiTrack::GameActionControllerOptiTrack(std::string localAd
     // Use this socket address to send commands to the server.
     serverCommands = NatNet::createAddress(this->serverAddress, NatNet::commandPort);
 
-    // Create sockets
-    sdCommand = NatNet::createCommandSocket(this->localAddress);
-    sdData = NatNet::createDataSocket(this->localAddress);
+    // Check server reachability and get corresponding local address
+    int testSocket;
+    if (! checkServerConnectivity(testSocket, serverCommands))
+    {
+        std::cerr << "Can't connect to Opti Track server !" << std::endl;
+    }
+    else
+    {
+        this->localAddress = getLocalAddress(testSocket).s_addr; 
 
-    // Y U NO COMPILE?
-    boost::thread* t = new boost::thread(&GameActionControllerOptiTrack::connectOptiTrack,this);
+        // Create sockets
+        sdCommand = NatNet::createCommandSocket(this->localAddress);
+        sdData = NatNet::createDataSocket(this->localAddress);
+
+        // Y U NO COMPILE?
+        boost::thread* t = new boost::thread(&GameActionControllerOptiTrack::connectOptiTrack,this);
+    }
 }
 
 

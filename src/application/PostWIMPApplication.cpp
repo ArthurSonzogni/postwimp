@@ -26,7 +26,8 @@ PostWIMPApplication::PostWIMPApplication():
     //gameAction.plugController(new GameActionControllerMouse());
     gameAction.plugController(new GameActionControllerMouseButton());
     gameAction.plugController(new GameActionControllerWiimote());
-    gameAction.plugController(new GameActionControllerOptiTrack("10.10.0.6", "10.10.0.254")); // TODO: get local IP programmatically
+    //gameAction.plugController(new GameActionControllerOptiTrack("10.10.0.6", "10.10.0.254")); // TODO: get local IP programmatically
+    gameAction.plugController(new GameActionControllerOptiTrack("10.10.0.254"));
 }
 
 void PostWIMPApplication::loop()

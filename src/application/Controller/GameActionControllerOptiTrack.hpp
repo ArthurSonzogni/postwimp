@@ -12,7 +12,7 @@ class CommandListener;
 class GameActionControllerOptiTrack : public GameActionController
 {
     public:
-        GameActionControllerOptiTrack(std::string localAddress, std::string serverAddress);
+        GameActionControllerOptiTrack(/*std::string localAddress, */std::string serverAddress);
         ~GameActionControllerOptiTrack();
         virtual void update(GameAction& gameAction, Application& application);
     protected:
