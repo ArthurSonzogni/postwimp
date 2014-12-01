@@ -28,6 +28,8 @@ class GameActionControllerKeyboard : public GameActionController
             KEY_CAMERA_TURN_YP,
             KEY_CAMERA_TURN_ZN,
             KEY_CAMERA_TURN_ZP,
+            KEY_SIZE_P,
+            KEY_SIZE_M,
             KEY_SAVE
         };
 

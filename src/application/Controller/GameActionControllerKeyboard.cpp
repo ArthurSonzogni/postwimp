@@ -27,6 +27,8 @@ void GameActionControllerKeyboard::assignKeys()
     keys[KEY_CAMERA_TURN_YP] = GLFW_KEY_L;
     keys[KEY_CAMERA_TURN_ZN] = GLFW_KEY_U;
     keys[KEY_CAMERA_TURN_ZP] = GLFW_KEY_O;
+    keys[KEY_SIZE_P] = GLFW_KEY_UP;
+    keys[KEY_SIZE_M] = GLFW_KEY_DOWN;
 }
 
 void GameActionControllerKeyboard::update(GameAction& gameAction, Application& application)
@@ -61,6 +63,12 @@ void GameActionControllerKeyboard::update(GameAction& gameAction, Application& a
         gameAction.view= glm::rotate(glm::mat4(1.0),rDelta,glm::vec3(0.0,0.0,-1.0))*gameAction.view;
     if (Input::isKeyHold(keys[KEY_CAMERA_TURN_ZP]))
         gameAction.view= glm::rotate(glm::mat4(1.0),rDelta,glm::vec3(0.0,0.0,+1.0))*gameAction.view;
+
+    // size
+    if (Input::isKeyHold(keys[KEY_SIZE_P]))
+        gameAction.brush.size *= 1.01;
+    if (Input::isKeyHold(keys[KEY_SIZE_M]))
+        gameAction.brush.size /= 1.01;
 
     // reconnect controllers
     if (Input::isKeyPressed(keys[KEY_RECONNECT]))

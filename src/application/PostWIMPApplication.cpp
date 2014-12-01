@@ -112,7 +112,7 @@ void PostWIMPApplication::step()
         for(int z = -T/2; z<=T/2; ++z)
         {
             float level = x*x+y*y+z*z;
-            level *= 0.03 / T;
+            level *= 3.0 / T;
             level = exp(-level);
             level *= 3.0 * gameAction.brush.strength;
             if (level>1.0) level=1.0;
@@ -202,12 +202,16 @@ void PostWIMPApplication::draw()
     ShaderLib::voxel -> setUniform("model", glm::mat4(1.0));
 
 
+    glDisable(GL_BLEND);
     voxelMapDisplayer.display();
 
+    glEnable(GL_BLEND);
+    glBlendEquation(GL_FUNC_ADD);
+    glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
     sphereObj.getShader().use();
     sphereObj.getShader().setUniform("projection",gameAction.projection);
     sphereObj.getShader().setUniform("view",gameAction.view);
-    sphereObj.getShader().setUniform("size",gameAction.brush.size);
+    sphereObj.getShader().setUniform("size",gameAction.brush.size/2.f);
     sphereObj.getShader().setUniform("pos",gameAction.brush.position);
     sphereObj.draw();
 }
