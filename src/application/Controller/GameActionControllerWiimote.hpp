@@ -9,9 +9,9 @@ class GameActionControllerWiimote : public GameActionController
 {
     public:
         GameActionControllerWiimote();
-        virtual bool reconnect();
-        virtual void update(GameAction& gameAction, Application& application);
-        virtual void processEvents(GameAction& gameAction, Application& application, std::list<GameAction::Event> events);
+        virtual bool reconnect() override;
+        virtual void update(GameAction& gameAction, Application& application) override;
+        virtual void processEvents(GameAction& gameAction, Application& application, std::list<GameAction::Event> events) override;
 
     protected:
         bool connectToWiimotes(int numWiimotes, int timeout);

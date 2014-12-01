@@ -40,6 +40,6 @@ void GameAction::update(Application& application)
     {
         (**it).update(*this,application);
         (**it).processEvents(*this,application,events);
-        events.clear();
     }
+    events.clear();
 }

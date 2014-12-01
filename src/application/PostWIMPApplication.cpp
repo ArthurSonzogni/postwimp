@@ -23,11 +23,11 @@ PostWIMPApplication::PostWIMPApplication():
 
     // plug controllers
     gameAction.plugController(new GameActionControllerKeyboard());
-    //gameAction.plugController(new GameActionControllerMouse());
+    gameAction.plugController(new GameActionControllerMouse());
     gameAction.plugController(new GameActionControllerMouseButton());
     gameAction.plugController(new GameActionControllerWiimote());
-    //gameAction.plugController(new GameActionControllerOptiTrack("10.10.0.6", "10.10.0.254")); // TODO: get local IP programmatically
-    gameAction.plugController(new GameActionControllerOptiTrack("10.10.0.254"));
+    //gameAction.plugController(new GameActionControllerOptiTrack("10.10.0.6", "10.10.0.254"));
+    //gameAction.plugController(new GameActionControllerOptiTrack("10.10.0.254"));
 }
 
 void PostWIMPApplication::loop()
@@ -151,25 +151,37 @@ void PostWIMPApplication::step()
     }
     
     // detect if brush is in the volume
-    // TODO: Arthur aides moi ici!!!
-    /*static bool brushWasInVolume = false;
+    static int ttl = 0;
+    static bool brushWasInVolume = false;
+    
     auto brushVoxel = voxelMap.get(px,py,pz);
-    if (brushVoxel.convertToDensity() >= brushVoxel.getThreshold())
+    
+    if (brushVoxel.getDensity() >= 128) //brushVoxel.getThreshold()
     {
         if (! brushWasInVolume)
         {
-            GameAction::events.push_back(GameAction::BrushEntersVolume);
-            brushWasInVolume = true;
+           if (gameAction.action == GameAction::Idle)
+            {
+                gameAction.events.push_back(GameAction::BrushEntersVolume);
+                brushWasInVolume = true;
+                ttl = 10;
+            }
+        }
+        else
+        {
+            ttl--;
+            if (ttl == 0)
+                gameAction.events.push_back(GameAction::BrushLeavesVolume);
         }
     }
     else
     {
-        if (brushWasInVolume)
+        if (brushWasInVolume && ttl > 0)
         {
-            GameAction::events.push_back(GameAction::BrushLeavesVolume);
+            gameAction.events.push_back(GameAction::BrushLeavesVolume);
             brushWasInVolume = false;
         }
-    }*/
+    }
 }
 
 void PostWIMPApplication::draw()
