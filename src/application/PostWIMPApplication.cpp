@@ -17,7 +17,12 @@ int32_t H = 128;
 
 PostWIMPApplication::PostWIMPApplication():
     voxelMap(H,H,H),
-    voxelMapDisplayer(voxelMap,24)
+    voxelMapDisplayer(voxelMap,24),
+    sphereObj("obj/sphere.obj",
+        ShaderProgram::loadFromFile(
+        "shader/cursor-shader.vert",
+        "shader/cursor-shader.frag")
+    )
 {
     ShaderLib shaderlib;
 
@@ -26,7 +31,6 @@ PostWIMPApplication::PostWIMPApplication():
     gameAction.plugController(new GameActionControllerMouse());
     gameAction.plugController(new GameActionControllerMouseButton());
     gameAction.plugController(new GameActionControllerWiimote());
-    //gameAction.plugController(new GameActionControllerOptiTrack("10.10.0.6", "10.10.0.254"));
     //gameAction.plugController(new GameActionControllerOptiTrack("10.10.0.254"));
 }
 
@@ -197,5 +201,13 @@ void PostWIMPApplication::draw()
     ShaderLib::voxel -> setUniform("view", gameAction.view);
     ShaderLib::voxel -> setUniform("model", glm::mat4(1.0));
 
+
     voxelMapDisplayer.display();
+
+    sphereObj.getShader().use();
+    sphereObj.getShader().setUniform("projection",gameAction.projection);
+    sphereObj.getShader().setUniform("view",gameAction.view);
+    sphereObj.getShader().setUniform("size",gameAction.brush.size);
+    sphereObj.getShader().setUniform("pos",gameAction.brush.position);
+    sphereObj.draw();
 }
