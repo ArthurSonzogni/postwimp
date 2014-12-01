@@ -34,7 +34,7 @@ class GameAction
             float strength;
         };
 
-        Brush brush = { {0.0,0.0,0.0}, 0xFF0000FF, 1.0, 1.0 };
+        Brush brush = { {0.0,0.0,0.0}, 0xFF0000FF, 5.0, 1.0 };
 
         enum Event
         {

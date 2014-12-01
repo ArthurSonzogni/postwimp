@@ -76,7 +76,7 @@ void PostWIMPApplication::step()
     }
 
 
-    const int T = 10 * gameAction.brush.size;
+    const int T = gameAction.brush.size;
 
     int px = gameAction.brush.position.x;
     int py = gameAction.brush.position.y;
