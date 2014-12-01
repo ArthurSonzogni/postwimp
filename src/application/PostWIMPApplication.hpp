@@ -6,7 +6,7 @@
 #include "voxelMap/VoxelMap.hpp"
 #include "voxelMap/VoxelMapDisplayer.hpp"
 #include "Controller/GameAction.hpp"
-#include "Controller/GameActionController.hpp"
+#include "graphic/ModelObj.hpp"
 
 
 class PostWIMPApplication : public Application
@@ -26,6 +26,10 @@ class PostWIMPApplication : public Application
         void cameraEvent();
 
         GameAction gameAction;
+
+        // cursorSphere
+        ModelObj sphereObj;
+        
 };
 
 #endif /* end of include guard: POSTWIMPAPPLICATION_7WD7L3VK */
