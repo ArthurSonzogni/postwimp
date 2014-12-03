@@ -12,7 +12,7 @@ class CommandListener;
 class GameActionControllerOptiTrack : public GameActionController
 {
     public:
-        GameActionControllerOptiTrack(/*std::string localAddress, */std::string serverAddress);
+        GameActionControllerOptiTrack(std::string serverAddress, int IDWiimote, int IDNunchuk);
         ~GameActionControllerOptiTrack();
         virtual void update(GameAction& gameAction, Application& application);
     protected:
@@ -27,6 +27,8 @@ class GameActionControllerOptiTrack : public GameActionController
         // Listeners
         CommandListener *commandListener;
         FrameListener *frameListener;
+        // Rigid bodies IDs
+        int IDWiimote, IDNunchuk;
 };
 
 #endif /* end of include guard: GameActionControllerOptiTrack_HEAD*/

@@ -35,8 +35,8 @@ bool GameActionControllerWiimote::reconnect()
 
 void GameActionControllerWiimote::update(GameAction& gameAction, Application& application)
 {
-    float tDelta = 40.0 * application.getFrameDeltaTime();
-    float rDelta = 2.0 * application.getFrameDeltaTime();
+    /*float tDelta = 40.0 * application.getFrameDeltaTime();
+    float rDelta = 2.0 * application.getFrameDeltaTime();*/
 
     getWiimoteUpdates();
 

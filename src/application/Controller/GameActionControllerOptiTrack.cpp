@@ -33,6 +33,7 @@ bool checkServerConnectivity(int sock, struct sockaddr_in addr)
     {
         return false;
     }
+    return true;
 }
 
 struct in_addr getLocalAddress(int sock)
@@ -47,8 +48,8 @@ struct in_addr getLocalAddress(int sock)
 
 
 
-GameActionControllerOptiTrack::GameActionControllerOptiTrack(/*std::string localAddress, */std::string serverAddress) :
-    /*localAddress(inet_addr(localAddress.c_str())), */serverAddress(inet_addr(serverAddress.c_str()))
+GameActionControllerOptiTrack::GameActionControllerOptiTrack(std::string serverAddress, int IDWiimote, int IDNunchuk) :
+    serverAddress(inet_addr(serverAddress.c_str())), IDWiimote(IDWiimote), IDNunchuk(IDNunchuk)
 {
     controllerName = "Opti Track";
     frameListener = NULL;
@@ -58,7 +59,7 @@ GameActionControllerOptiTrack::GameActionControllerOptiTrack(/*std::string local
     serverCommands = NatNet::createAddress(this->serverAddress, NatNet::commandPort);
 
     // Check server reachability and get corresponding local address
-    int testSocket;
+    int testSocket = -1;
     if (! checkServerConnectivity(testSocket, serverCommands))
     {
         std::cerr << "Can't connect to Opti Track server !" << std::endl;
@@ -71,7 +72,7 @@ GameActionControllerOptiTrack::GameActionControllerOptiTrack(/*std::string local
         sdCommand = NatNet::createCommandSocket(this->localAddress);
         sdData = NatNet::createDataSocket(this->localAddress);
 
-        // Y U NO COMPILE?
+        // TODO handle killing t and check if connection is OK
         boost::thread* t = new boost::thread(&GameActionControllerOptiTrack::connectOptiTrack,this);
     }
 }
@@ -114,32 +115,39 @@ void GameActionControllerOptiTrack::update(GameAction& gameAction, Application& 
             auto rigid = frame.rigidBodies();
             for(auto it = rigid.begin(); it!=rigid.end(); ++it)
             {
-                if (it->trackingValid() && it->id() == 3)
+                if (it->trackingValid())
                 {
-                    auto pos = (*it).location();
-                    gameAction.brush.position.x = pos.x * 64.0 + 64.0; 
-                    gameAction.brush.position.y = pos.y * 64.0 + 64.0; 
-                    gameAction.brush.position.z = pos.z * 64.0 + 64.0; 
-                    /*static int i = 0;
-                    if (i++%400 < 200)
-                    gameAction.action = GameAction::Add;
-                    else
-                    gameAction.action = GameAction::Remove;
-                    */
+                    if (it->id() == IDWiimote)
+                    {
+                        auto pos = (*it).location();
+                        gameAction.brush.position.x = pos.x * 64.0 + 64.0; 
+                        gameAction.brush.position.y = pos.y * 64.0 + 64.0; 
+                        gameAction.brush.position.z = pos.z * 64.0 + 64.0; 
+                        /*static int i = 0;
+                          if (i++%400 < 200)
+                          gameAction.action = GameAction::Add;
+                          else
+                          gameAction.action = GameAction::Remove;
+                          */
 
-                    //std::cout << pos.x << std::endl;
-                    //std::cout << pos.y << std::endl;
-                    //std::cout << pos.z << std::endl;
-                    //std::cout << gameAction.brush.position.x << std::endl;
-                    //std::cout << gameAction.brush.position.y << std::endl;
-                    //std::cout << gameAction.brush.position.z << std::endl;
-                    //std::cout << std::endl;
-                    //std::cout << "valid" << std::endl;
+                        //std::cout << pos.x << std::endl;
+                        //std::cout << pos.y << std::endl;
+                        //std::cout << pos.z << std::endl;
+                        //std::cout << gameAction.brush.position.x << std::endl;
+                        //std::cout << gameAction.brush.position.y << std::endl;
+                        //std::cout << gameAction.brush.position.z << std::endl;
+                        //std::cout << std::endl;
+                        //std::cout << "valid" << std::endl;
+                    }
+                    else if (it->id() == IDNunchuk)
+                    {
+                        //TODO
+                    }
                 }
-                else
+                /*else
                 {
-                    //std::cout << "invalid" << std::endl;
-                }
+                    std::cout << "invalid" << std::endl;
+                }*/
             }
         }
     }

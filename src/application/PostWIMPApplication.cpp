@@ -31,7 +31,7 @@ PostWIMPApplication::PostWIMPApplication():
     gameAction.plugController(new GameActionControllerMouse());
     gameAction.plugController(new GameActionControllerMouseButton());
     gameAction.plugController(new GameActionControllerWiimote());
-    //gameAction.plugController(new GameActionControllerOptiTrack("10.10.0.254"));
+    gameAction.plugController(new GameActionControllerOptiTrack("10.10.0.254", 3, 4)); //TODO get IDs from command line args?
 }
 
 void PostWIMPApplication::loop()
