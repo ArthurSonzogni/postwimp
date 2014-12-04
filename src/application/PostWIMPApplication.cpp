@@ -50,8 +50,8 @@ void PostWIMPApplication::step()
     // update the gameAction
     gameAction.update(*this);
 
-    static bool ok = false;
-    if (ok)
+    static bool ok = true;
+    if (false and ok)
     {
         ok = false;
         for(int z = 1 ; z<H; ++z)
@@ -74,6 +74,32 @@ void PostWIMPApplication::step()
                     PolyVox::Vector3DInt32(H*2,H,H)
                     ));
     }
+
+    if (true && ok)
+    {
+        for(int i = 1; i<H; ++i)
+        {
+            voxelMap.set(i,1,1,Voxel(0xFFFFFFFF,255));
+            voxelMap.set(i,H-1,1,Voxel(0xFFFFFFFF,255));
+            voxelMap.set(i,1,H-1,Voxel(0xFFFFFFFF,255));
+            voxelMap.set(i,H-1,H-1,Voxel(0xFFFFFFFF,255));
+
+            voxelMap.set(1,i,1,Voxel(0xFFFFFFFF,255));
+            voxelMap.set(H-1,i,1,Voxel(0xFFFFFFFF,255));
+            voxelMap.set(1,i,H-1,Voxel(0xFFFFFFFF,255));
+            voxelMap.set(H-1,i,H-1,Voxel(0xFFFFFFFF,255));
+
+            voxelMap.set(1,1,i,Voxel(0xFFFFFFFF,255));
+            voxelMap.set(H-1,1,i,Voxel(0xFFFFFFFF,255));
+            voxelMap.set(1,H-1,i,Voxel(0xFFFFFFFF,255));
+            voxelMap.set(H-1,H-1,i,Voxel(0xFFFFFFFF,255));
+        }
+        voxelMapDisplayer.update(PolyVox::Region(
+                    PolyVox::Vector3DInt32(0,0,0),
+                    PolyVox::Vector3DInt32(H*2,H,H)
+                    ));
+    }
+    ok = false;
 
 
     const int T = gameAction.brush.size;
