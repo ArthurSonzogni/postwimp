@@ -30,7 +30,8 @@ class GameActionControllerKeyboard : public GameActionController
             KEY_CAMERA_TURN_ZP,
             KEY_SIZE_P,
             KEY_SIZE_M,
-            KEY_SAVE
+            KEY_SAVE,
+            KEY_CHANGE_COLOR
         };
 
         void assignKeys();

@@ -17,5 +17,8 @@ void main()
     float diffus = max(dot(n,l),0.0) * 0.5;
     float specular = pow(max(dot(r,l),0.0),eta) * 2.0 * fColor.a;
 
-    gl_FragColor = fColor * (ambient+diffus+specular);
+    float c = n.z;
+    
+    gl_FragColor = fColor;
+    gl_FragColor.a = c;
 } 

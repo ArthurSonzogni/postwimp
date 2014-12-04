@@ -29,6 +29,7 @@ void GameActionControllerKeyboard::assignKeys()
     keys[KEY_CAMERA_TURN_ZP] = GLFW_KEY_O;
     keys[KEY_SIZE_P] = GLFW_KEY_UP;
     keys[KEY_SIZE_M] = GLFW_KEY_DOWN;
+    keys[KEY_CHANGE_COLOR] = GLFW_KEY_SPACE;
 }
 
 void GameActionControllerKeyboard::update(GameAction& gameAction, Application& application)
@@ -77,5 +78,12 @@ void GameActionControllerKeyboard::update(GameAction& gameAction, Application& a
     // escape
     if (Input::isKeyPressed(keys[KEY_ESCAPE]))
         application.exit();
+
+    // change color
+    if (Input::isKeyPressed(keys[KEY_CHANGE_COLOR]))
+    {
+        auto& c = gameAction.brush.color;
+        c = (c << 1) + (c >> 31);
+    }
 
 }

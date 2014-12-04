@@ -10,6 +10,7 @@ uniform mat4 view = mat4(1);
 uniform vec4 lightPosition = vec4(0.0,10.0,0.0,0.0);
 uniform float size = 1.0;
 uniform vec3  pos = vec3(0.0,0.0,0.0);
+uniform vec4 color = vec4(1.0);
 
 out vec4 fColor;
 out vec3 fNormal;
@@ -18,7 +19,7 @@ out vec3 fEyeDirection;
 
 void main()
 {
-    fColor = vec4(1.0,1.0,1.0,0.5);
+    fColor = color;
     vec4 pos = view * vec4(size * position + pos,1.0);
     fNormal = normalize(vec3(view * vec4(normal,0.0)));
     fLightDirection = normalize(vec3( view * lightPosition - pos) );

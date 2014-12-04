@@ -213,5 +213,16 @@ void PostWIMPApplication::draw()
     sphereObj.getShader().setUniform("view",gameAction.view);
     sphereObj.getShader().setUniform("size",gameAction.brush.size/2.f);
     sphereObj.getShader().setUniform("pos",gameAction.brush.position-glm::vec3(0.5f,0.5f,0.5f));
+
+    {
+        glm::vec4 color;
+        uint32_t m = gameAction.brush.color;
+        color.a = m&0xFF; m>>=8;
+        color.b = m&0xFF; m>>=8;
+        color.g = m&0xFF; m>>=8;
+        color.r = m&0xFF; m>>=8;
+        color /= 255.0;
+        sphereObj.getShader().setUniform("color",color);
+    }
     sphereObj.draw();
 }
