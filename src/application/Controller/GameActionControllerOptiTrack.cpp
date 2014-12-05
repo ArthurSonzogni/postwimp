@@ -120,9 +120,13 @@ void GameActionControllerOptiTrack::update(GameAction& gameAction, Application& 
                     if (it->id() == IDWiimote)
                     {
                         auto pos = (*it).location();
+                        
                         gameAction.brush.position.x = pos.x * 64.0 + 64.0; 
                         gameAction.brush.position.y = pos.y * 64.0 + 64.0; 
-                        gameAction.brush.position.z = pos.z * 64.0 + 64.0; 
+                        gameAction.brush.position.z = -25.f;
+                        
+
+                        gameAction.brush.position = glm::vec3(glm::inverse(gameAction.view) *glm::vec4(gameAction.brush.position,1.f));
                         /*static int i = 0;
                           if (i++%400 < 200)
                           gameAction.action = GameAction::Add;
@@ -141,7 +145,33 @@ void GameActionControllerOptiTrack::update(GameAction& gameAction, Application& 
                     }
                     else if (it->id() == IDNunchuk)
                     {
-                        //TODO
+                        auto rot = (*it).orientation();
+                        auto pos = (*it).location();
+
+                        glm::quat q(rot.qx, rot.qy, rot.qz, rot.qw);
+                        glm::mat4 optiView =
+                            glm::translate(glm::mat4(1.0),128.f*glm::vec3(pos.x,pos.y,pos.z))
+                            *
+                            glm::mat4_cast(q)
+                            ;
+                        
+
+                        if (gameAction.isViewControlled) 
+                        {
+                            if (!isViewControlled)
+                            {
+                                isViewControlled = true;
+                                savedView = glm::inverse(optiView) * gameAction.view;
+                                optiViewInertiel = optiView;
+
+                            }
+                            optiViewInertiel = optiViewInertiel*0.9f+optiView*0.1f;
+                            gameAction.view = optiViewInertiel * savedView;
+                        }
+                        else
+                        {
+                            isViewControlled = false;
+                        }
                     }
                 }
                 /*else

@@ -17,5 +17,6 @@
 #include <glm/gtc/matrix_access.hpp>
 #include <glm/gtx/string_cast.hpp>
 #include <glm/gtx/color_space.hpp>
+#include <glm/gtc/quaternion.hpp>
 
 #endif /* end of include guard: GLM_SY6DSF7B */

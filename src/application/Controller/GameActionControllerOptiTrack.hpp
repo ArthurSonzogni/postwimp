@@ -29,6 +29,10 @@ class GameActionControllerOptiTrack : public GameActionController
         FrameListener *frameListener;
         // Rigid bodies IDs
         int IDWiimote, IDNunchuk;
+
+        bool isViewControlled = false;
+        glm::mat4 savedView;
+        glm::mat4 optiViewInertiel;
 };
 
 #endif /* end of include guard: GameActionControllerOptiTrack_HEAD*/

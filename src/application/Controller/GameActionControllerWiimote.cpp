@@ -65,6 +65,7 @@ void GameActionControllerWiimote::update(GameAction& gameAction, Application& ap
                     gameAction.brush.size *= 1.0 - (.005 * magnitude * (-sa));
             }
 
+            gameAction.isViewControlled = nc.Buttons.isPressed(CNunchukButtons::BUTTON_Z);
             //if(nc.Buttons.isPressed(CNunchukButtons::BUTTON_C))
             /*if(nc.Buttons.isPressed(CNunchukButtons::BUTTON_Z))
               {
@@ -131,14 +132,14 @@ void GameActionControllerWiimote::update(GameAction& gameAction, Application& ap
         }
 
         // Debug
-        static int j = 0;
+        /*static int j = 0;
         if (j++%100 == 0) 
         {
             std::cout << "Brush size : " << gameAction.brush.size << std::endl;
             std::cout << "Brush strength : " << gameAction.brush.strength << std::endl;
             std::cout << "Joystick angle : " << angle*180.0/M_PI << "°" << std::endl;
             std::cout << "Joystick magnitude :" << magnitude << std::endl;
-        }
+        }*/
     }
 }
 
@@ -221,7 +222,7 @@ void GameActionControllerWiimote::handleWiimoteStatus(CWiimote &wm)
     printf("speaker: %i\n", wm.isUsingSpeaker());
     printf("ir: %i\n", wm.isUsingIR());
     printf("leds: %i %i %i %i\n", wm.isLEDSet(1), wm.isLEDSet(2), wm.isLEDSet(3), wm.isLEDSet(4));
-    printf("battery: %f %%\n", wm.GetBatteryLevel());
+    printf("battery: %2.1f %%\n", wm.GetBatteryLevel()*100.0f);
 }
 
 void GameActionControllerWiimote::handleWiimoteDisconnect(CWiimote &wm)

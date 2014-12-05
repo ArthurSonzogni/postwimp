@@ -28,7 +28,7 @@ PostWIMPApplication::PostWIMPApplication():
 
     // plug controllers
     gameAction.plugController(new GameActionControllerKeyboard());
-    gameAction.plugController(new GameActionControllerMouse());
+    //gameAction.plugController(new GameActionControllerMouse());
     gameAction.plugController(new GameActionControllerMouseButton());
     gameAction.plugController(new GameActionControllerWiimote());
     gameAction.plugController(new GameActionControllerOptiTrack("10.10.0.254", 3, 4)); //TODO get IDs from command line args?
@@ -158,11 +158,13 @@ void PostWIMPApplication::step()
 
 
     // print periodically fps
+#ifdef PRINTFPS
     static float deltaMean = getFrameDeltaTime();
     static int n = 0;
     deltaMean = 0.9*deltaMean + 0.1*getFrameDeltaTime();
     if (n++%100==0)
         cout << "fps=" << (int)(1/deltaMean) << endl;
+#endif
 
 
     // wireframe mode
