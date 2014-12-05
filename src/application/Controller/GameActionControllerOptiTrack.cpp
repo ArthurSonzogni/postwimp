@@ -121,9 +121,13 @@ void GameActionControllerOptiTrack::update(GameAction& gameAction, Application& 
                     {
                         auto pos = (*it).location();
                         
-                        gameAction.brush.position.x = pos.x * 64.0 + 64.0; 
-                        gameAction.brush.position.y = pos.y * 64.0 + 64.0; 
-                        gameAction.brush.position.z = -25.f;
+                        gameAction.brush.position.x = pos.x;
+                        gameAction.brush.position.y = pos.y;
+                        gameAction.brush.position.z = pos.z;
+
+                        gameAction.brush.position *= 64.0;
+
+                        gameAction.brush.position.z -= 40.0;
                         
 
                         gameAction.brush.position = glm::vec3(glm::inverse(gameAction.view) *glm::vec4(gameAction.brush.position,1.f));
