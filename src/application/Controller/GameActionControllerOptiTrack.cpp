@@ -111,6 +111,7 @@ void GameActionControllerOptiTrack::update(GameAction& gameAction, Application& 
             // Quit if the listener has no more frames.
             if( !valid )
                 break;
+
             //std::cout << frame << std::endl;
             auto rigid = frame.rigidBodies();
             for(auto it = rigid.begin(); it!=rigid.end(); ++it)
@@ -120,16 +121,12 @@ void GameActionControllerOptiTrack::update(GameAction& gameAction, Application& 
                     if (it->id() == IDWiimote)
                     {
                         auto pos = (*it).location();
-                        
-                        gameAction.brush.position.x = pos.x;
+
+                        gameAction.brush.position.x = -pos.x;
                         gameAction.brush.position.y = pos.y;
-                        gameAction.brush.position.z = pos.z;
-
+                        gameAction.brush.position.z = -pos.z;
                         gameAction.brush.position *= 64.0;
-
-                        gameAction.brush.position.z -= 40.0;
-                        
-
+                        gameAction.brush.position.z -= 64.0;
                         gameAction.brush.position = glm::vec3(glm::inverse(gameAction.view) *glm::vec4(gameAction.brush.position,1.f));
                         /*static int i = 0;
                           if (i++%400 < 200)
@@ -153,10 +150,18 @@ void GameActionControllerOptiTrack::update(GameAction& gameAction, Application& 
                         auto pos = (*it).location();
 
                         glm::quat q(rot.qx, rot.qy, rot.qz, rot.qw);
+                        glm::mat4 r = glm::mat4_cast(q);
+                        glm::mat4 rotBaseChange= glm::mat4(
+                            0.0, 0.0, -1.0, 0.0,
+                            0.0, 1.0, 0.0, 0.0,
+                            -1.0, 0.0, 0.0, 0.0,
+                            0.0, 0.0, 0.0, 1.0
+                        );
+                        r = glm::inverse(rotBaseChange) * r * rotBaseChange;
                         glm::mat4 optiView =
-                            glm::translate(glm::mat4(1.0),128.f*glm::vec3(pos.x,pos.y,pos.z))
+                            glm::translate(glm::mat4(1.0),128.f*glm::vec3(-pos.x,pos.y,-pos.z))
                             *
-                            glm::mat4_cast(q)
+                            r
                             ;
                         
 
