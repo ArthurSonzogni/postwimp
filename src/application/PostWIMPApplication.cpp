@@ -22,6 +22,11 @@ PostWIMPApplication::PostWIMPApplication():
         ShaderProgram::loadFromFile(
         "shader/cursor-shader.vert",
         "shader/cursor-shader.frag")
+    ),
+    repereObj("obj/repere.obj",
+        ShaderProgram::loadFromFile(
+        "shader/cursor-shader.vert",
+        "shader/cursor-shader.frag")
     )
 {
     ShaderLib shaderlib;
@@ -53,10 +58,9 @@ void PostWIMPApplication::step()
     static bool ok = true;
     if (false and ok)
     {
-        ok = false;
         for(int z = 1 ; z<H; ++z)
         {
-            //cout<<z<<endl;
+            cout<<z<<endl;
             for(int y = 1 ; y<H; ++y)
                 for(int x = 1 ; x<H; ++x)
                 {
@@ -253,4 +257,15 @@ void PostWIMPApplication::draw()
         sphereObj.getShader().setUniform("color",color);
     }
     sphereObj.draw();
+
+
+    // repere
+    glDisable(GL_BLEND);
+    repereObj.getShader().use();
+    repereObj.getShader().setUniform("projection",gameAction.projection);
+    repereObj.getShader().setUniform("view",gameAction.view);
+    repereObj.getShader().setUniform("model",glm::translate(glm::scale(glm::mat4(1.f),glm::vec3(100.f)),glm::vec3(10.f,10.f,10.f)));
+
+    repereObj.draw();
+
 }

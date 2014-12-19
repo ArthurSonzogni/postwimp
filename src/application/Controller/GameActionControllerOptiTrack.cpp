@@ -127,22 +127,8 @@ void GameActionControllerOptiTrack::update(GameAction& gameAction, Application& 
                         gameAction.brush.position.z = -pos.z;
                         gameAction.brush.position *= 64.0;
                         gameAction.brush.position.z -= 64.0;
-                        gameAction.brush.position = glm::vec3(glm::inverse(gameAction.view) *glm::vec4(gameAction.brush.position,1.f));
-                        /*static int i = 0;
-                          if (i++%400 < 200)
-                          gameAction.action = GameAction::Add;
-                          else
-                          gameAction.action = GameAction::Remove;
-                          */
 
-                        //std::cout << pos.x << std::endl;
-                        //std::cout << pos.y << std::endl;
-                        //std::cout << pos.z << std::endl;
-                        //std::cout << gameAction.brush.position.x << std::endl;
-                        //std::cout << gameAction.brush.position.y << std::endl;
-                        //std::cout << gameAction.brush.position.z << std::endl;
-                        //std::cout << std::endl;
-                        //std::cout << "valid" << std::endl;
+                        gameAction.brush.position = glm::vec3(glm::inverse(gameAction.view) *glm::vec4(gameAction.brush.position,1.f));
                     }
                     else if (it->id() == IDNunchuk)
                     {
@@ -152,9 +138,9 @@ void GameActionControllerOptiTrack::update(GameAction& gameAction, Application& 
                         glm::quat q(rot.qx, rot.qy, rot.qz, rot.qw);
                         glm::mat4 r = glm::mat4_cast(q);
                         glm::mat4 rotBaseChange= glm::mat4(
-                            0.0, 0.0, -1.0, 0.0,
+                            0.0, 0.0, 1.0, 0.0,
                             0.0, 1.0, 0.0, 0.0,
-                            -1.0, 0.0, 0.0, 0.0,
+                            1.0, 0.0, 0.0, 0.0,
                             0.0, 0.0, 0.0, 1.0
                         );
                         r = glm::inverse(rotBaseChange) * r * rotBaseChange;

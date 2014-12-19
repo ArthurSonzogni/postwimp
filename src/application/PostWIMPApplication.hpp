@@ -29,6 +29,7 @@ class PostWIMPApplication : public Application
 
         // cursorSphere
         ModelObj sphereObj;
+        ModelObj repereObj;
         
 };
 
