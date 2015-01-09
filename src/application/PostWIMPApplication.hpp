@@ -7,6 +7,7 @@
 #include "voxelMap/VoxelMapDisplayer.hpp"
 #include "Controller/GameAction.hpp"
 #include "graphic/ModelObj.hpp"
+#include "graphic/Axes.hpp"
 
 
 class PostWIMPApplication : public Application
@@ -30,6 +31,9 @@ class PostWIMPApplication : public Application
         // cursorSphere
         ModelObj sphereObj;
         ModelObj repereObj;
+
+        // axes
+        Axes axes;
         
 };
 

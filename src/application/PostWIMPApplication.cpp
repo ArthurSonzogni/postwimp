@@ -33,10 +33,10 @@ PostWIMPApplication::PostWIMPApplication():
 
     // plug controllers
     gameAction.plugController(new GameActionControllerKeyboard());
-    //gameAction.plugController(new GameActionControllerMouse());
-    //gameAction.plugController(new GameActionControllerMouseButton());
-    gameAction.plugController(new GameActionControllerWiimote());
-    gameAction.plugController(new GameActionControllerOptiTrack("10.10.0.254", 3, 4));
+    gameAction.plugController(new GameActionControllerMouse());
+    gameAction.plugController(new GameActionControllerMouseButton());
+    //gameAction.plugController(new GameActionControllerWiimote());
+    //gameAction.plugController(new GameActionControllerOptiTrack("10.10.0.254", 3, 4));
 }
 
 void PostWIMPApplication::loop()
@@ -260,12 +260,20 @@ void PostWIMPApplication::draw()
 
 
     // repere
-    glDisable(GL_BLEND);
-    repereObj.getShader().use();
-    repereObj.getShader().setUniform("projection",gameAction.projection);
-    repereObj.getShader().setUniform("view",gameAction.view);
-    repereObj.getShader().setUniform("model",glm::translate(glm::scale(glm::mat4(1.f),glm::vec3(100.f)),glm::vec3(10.f,10.f,10.f)));
+    //repereObj.getShader().use();
+    //repereObj.getShader().setUniform("projection",gameAction.projection);
+    //repereObj.getShader().setUniform("view",gameAction.view);
+    //repereObj.getShader().setUniform("model",glm::translate(glm::scale(glm::mat4(1.f),glm::vec3(100.f)),glm::vec3(10.f,10.f,10.f)));
 
-    repereObj.draw();
+    //repereObj.draw();
+
+    glm::mat4 axesView = gameAction.view;
+    axesView[3].x =  - getHeight()/getWidth()*2.0;
+    axesView[3].y =  - 2.0;
+    axesView[3].z =  -5.0;
+
+    axes.draw(gameAction.projection,axesView);
+
+    glDisable(GL_BLEND);
 
 }
