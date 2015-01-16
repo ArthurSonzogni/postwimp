@@ -162,7 +162,7 @@ void GameActionControllerOptiTrack::update(GameAction& gameAction, Application& 
                                 optiViewInertiel = optiView;
 
                             }
-                            //optiViewInertiel = optiViewInertiel*0.9f+optiView*0.1f;
+                            optiViewInertiel = optiViewInertiel*0.9f+optiView*0.1f;
                             optiViewInertiel = optiView;
                             gameAction.view = optiViewInertiel * savedView;
                         }
