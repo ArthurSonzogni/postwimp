@@ -144,6 +144,7 @@ void GameActionControllerOptiTrack::update(GameAction& gameAction, Application& 
                             0.0, 0.0, 0.0, 1.0
                         );
                         r = glm::inverse(rotBaseChange) * r * rotBaseChange;
+                        r = glm::inverse(r);
                         glm::mat4 optiView =
                             glm::translate(glm::mat4(1.0),128.f*glm::vec3(-pos.x,pos.y,-pos.z))
                             *
