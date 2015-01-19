@@ -99,6 +99,8 @@ void GameActionControllerWiimote::update(GameAction& gameAction, Application& ap
             else
                 gameAction.action = GameAction::Add;
         }
+        else
+            gameAction.action = GameAction::Idle;
 
         // Size
         if (wm.Buttons.isHeld(CButtons::BUTTON_PLUS))
