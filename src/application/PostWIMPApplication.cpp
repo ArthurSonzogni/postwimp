@@ -274,6 +274,9 @@ void PostWIMPApplication::draw()
 
     axes.draw(gameAction.projection,axesView);
 
+    // hand draw
+    axes.draw(gameAction.projection,glm::scale(gameAction.handPosition,glm::vec3(5.0)));
+
     glDisable(GL_BLEND);
 
 }

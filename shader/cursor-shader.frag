@@ -20,5 +20,5 @@ void main()
     float c = n.z;
     
     gl_FragColor = fColor;
-    gl_FragColor.a = c;
+    gl_FragColor.a = c * 0.5;
 } 

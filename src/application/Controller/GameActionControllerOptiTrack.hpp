@@ -33,6 +33,10 @@ class GameActionControllerOptiTrack : public GameActionController
         bool isViewControlled = false;
         glm::mat4 savedView;
         glm::mat4 optiViewInertiel;
+
+        // hand position
+        glm::vec3 handPosition = glm::vec3(0.0);
+        glm::mat4 handRotation = glm::mat4(1.0);
 };
 
 #endif /* end of include guard: GameActionControllerOptiTrack_HEAD*/

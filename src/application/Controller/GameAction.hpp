@@ -34,6 +34,8 @@ class GameAction
             float strength;
         };
 
+        glm::mat4 handPosition = glm::mat4(1.0);
+
         Brush brush = { {0.0,0.0,0.0}, 0xFF0000FF, 5.0, 1.0 };
 
         enum Event

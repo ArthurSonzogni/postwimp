@@ -20,6 +20,7 @@
 #include <NatNetLinux/FrameListener.h>
 
 #include <time.h>
+#include "utils/glm.hpp"
 
 
 bool checkServerConnectivity(int sock, struct sockaddr_in addr)
@@ -100,6 +101,13 @@ GameActionControllerOptiTrack::~GameActionControllerOptiTrack()
 
 void GameActionControllerOptiTrack::update(GameAction& gameAction, Application& application)
 {
+    const glm::mat4 frameToWorld = {
+        {-64.0,0.0,0.0,0.0},
+        {0.0,64.0,0.0,0.0},
+        {0.0,0.0,-64.0,0.0},
+        {0.0,0.0,-64.0,1.0},
+    };
+
     if (frameListener)
     {
         bool valid;
@@ -121,36 +129,30 @@ void GameActionControllerOptiTrack::update(GameAction& gameAction, Application& 
                     if (it->id() == IDWiimote)
                     {
                         auto pos = (*it).location();
-
-                        gameAction.brush.position.x = -pos.x;
-                        gameAction.brush.position.y = pos.y;
-                        gameAction.brush.position.z = -pos.z;
-                        gameAction.brush.position *= 64.0;
-                        gameAction.brush.position.z -= 64.0;
-
-                        gameAction.brush.position = glm::vec3(glm::inverse(gameAction.view) *glm::vec4(gameAction.brush.position,1.f));
+                        //gameAction.brush.position.x = -pos.x;
+                        //gameAction.brush.position.y = +pos.y;
+                        //gameAction.brush.position.z = -pos.z - 1.0;
+                        //gameAction.brush.position *= 64.f;
+                        //gameAction.brush.position = glm::vec3(glm::inverse(gameAction.view) * glm::vec4(gameAction.brush.position,1.0));
+                        gameAction.brush.position = glm::vec3(glm::inverse(gameAction.view) * frameToWorld * glm::vec4(pos.x,pos.y,pos.z,1.0));
                     }
                     else if (it->id() == IDNunchuk)
                     {
                         auto rot = (*it).orientation();
                         auto pos = (*it).location();
 
-                        glm::quat q(rot.qx, rot.qy, rot.qz, rot.qw);
+                        glm::quat q(rot.qw, rot.qx, rot.qy, rot.qz);
+                        //glm::mat4 r = glm::inverse(glm::mat4_cast(q));
                         glm::mat4 r = glm::mat4_cast(q);
-                        glm::mat4 rotBaseChange= glm::mat4(
-                            0.0, 0.0, 1.0, 0.0,
-                            0.0, 1.0, 0.0, 0.0,
-                            1.0, 0.0, 0.0, 0.0,
-                            0.0, 0.0, 0.0, 1.0
-                        );
-                        r = glm::inverse(rotBaseChange) * r * rotBaseChange;
-                        r = glm::inverse(r);
-                        glm::mat4 optiView =
-                            glm::translate(glm::mat4(1.0),128.f*glm::vec3(-pos.x,pos.y,-pos.z))
-                            *
-                            r
-                            ;
 
+                        handPosition = glm::vec3(frameToWorld * glm::vec4(pos.x,pos.y,pos.z,1.f));
+                        //r = glm::inverse(frameToWorld) * r * frameToWorld;
+                        r = frameToWorld * r * glm::inverse(frameToWorld);
+                        r[3] = glm::vec4(0.0,0.0,0.0,1.0);
+                        handRotation = r;
+
+                        glm::mat4 optiView = gameAction.handPosition;
+                        
                         
 
                         if (gameAction.isViewControlled) 
@@ -179,6 +181,10 @@ void GameActionControllerOptiTrack::update(GameAction& gameAction, Application& 
             }
         }
     }
+    gameAction.handPosition = glm::mat4(1.0);
+    gameAction.handPosition = glm::translate(gameAction.handPosition,handPosition);
+    gameAction.handPosition = gameAction.handPosition * handRotation;
+    
 }
 
 // This thread loop just prints frames as they arrive.
