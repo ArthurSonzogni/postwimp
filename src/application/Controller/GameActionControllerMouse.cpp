@@ -4,16 +4,24 @@
 #include <GLFW/glfw3.h>
 #include "system/Input.hpp"
 
+float height = 10.0;
+void scrollCallBack(GLFWwindow* w, double dx, double dy)
+{
+    height+=dy;    
+}
 
 GameActionControllerMouse::GameActionControllerMouse()
 {
     controllerName = "Mouse";
+    height = 10.0;
+
+    glfwSetScrollCallback(Application::getInstance().getWindow(),scrollCallBack);
 }
 
 
 void GameActionControllerMouse::update(GameAction& gameAction, Application& application)
 {
-    const float T = 10.f;
+    const float T = height;
     float mouseX = float(Input::mouseX()) / float(application.getWidth()) ; 
     float mouseY = 1.0-float(Input::mouseY()) / float(application.getHeight()) ; 
     mouseX = 2.0*mouseX-1.0;
