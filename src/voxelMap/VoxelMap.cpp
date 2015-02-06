@@ -5,7 +5,8 @@ VoxelMap::VoxelMap(uint32_t sizeX, uint32_t sizeY, uint32_t sizeZ):
     sizeX(sizeX),
     sizeY(sizeZ),
     sizeZ(sizeZ),
-    volume(PolyVox::Region(PolyVox::Vector3DInt32(0,0,0),PolyVox::Vector3DInt32(sizeX-1,sizeY-1,sizeZ-1)))
+    filePager("data"),
+    volume(PolyVox::Region(PolyVox::Vector3DInt32(0,0,0),PolyVox::Vector3DInt32(sizeX-1,sizeY-1,sizeZ-1)),&filePager)
 {
  
 }

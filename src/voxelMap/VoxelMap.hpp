@@ -5,6 +5,7 @@
 #include "PolyVoxCore/CubicSurfaceExtractor.h"
 #include "PolyVoxCore/MarchingCubesSurfaceExtractor.h"
 #include "PolyVoxCore/Mesh.h"
+#include "MyFilePager.h"
 #include "PolyVoxCore/PagedVolume.h"
 #include "PolyVoxCore/RawVolume.h"
 
@@ -39,6 +40,7 @@ class VoxelMap
 
         // attributes
         glm::ivec3 needUpdateMin,needUpdateMax;
+        PolyVox::MyFilePager<Voxel> filePager;
         PolyVox::PagedVolume<Voxel> volume;
         //PolyVox::RawVolume<Voxel> volume;
 };
