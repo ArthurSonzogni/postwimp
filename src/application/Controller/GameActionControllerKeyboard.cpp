@@ -30,6 +30,40 @@ void GameActionControllerKeyboard::assignKeys()
     keys[KEY_SIZE_P] = GLFW_KEY_UP;
     keys[KEY_SIZE_M] = GLFW_KEY_DOWN;
     keys[KEY_CHANGE_COLOR] = GLFW_KEY_SPACE;
+    keys[KEY_INCREASE_RED] = GLFW_KEY_R;
+    keys[KEY_DECREASE_RED] = GLFW_KEY_F;
+    keys[KEY_INCREASE_GREEN] = GLFW_KEY_T;
+    keys[KEY_DECREASE_GREEN] = GLFW_KEY_G;
+    keys[KEY_INCREASE_BLUE] = GLFW_KEY_Y;
+    keys[KEY_DECREASE_BLUE] = GLFW_KEY_H;
+    keys[KEY_INCREASE_SHIN] = GLFW_KEY_V;
+    keys[KEY_DECREASE_SHIN] = GLFW_KEY_B;
+}
+
+void changeColor(uint32_t& c, int component, int side)
+{
+    const int64_t d = 1 << (8 * component);
+    int64_t mask = 0;
+    for(int i = 0; i<8; ++i) mask = (mask << 1) + d;
+    //const int invMask = 0xFFFF ^ mask;
+
+    //int64_t cc = c;
+
+    //cc = (cc & invMask) | (mask & ( (cc & mask) + side*d ));
+
+    c |= mask;
+}
+void removeColor(uint32_t& c, int component)
+{
+    const int64_t d = 1 << (8 * component);
+    int64_t mask = 0;
+    for(int i = 0; i<8; ++i) mask = (mask << 1) + d;
+    //const int invMask = 0xFFFF ^ mask;
+
+    //int64_t cc = c;
+
+    //cc = (cc & invMask);
+    c &= mask;
 }
 
 void GameActionControllerKeyboard::update(GameAction& gameAction, Application& application)
@@ -77,7 +111,7 @@ void GameActionControllerKeyboard::update(GameAction& gameAction, Application& a
 
     // escape
     if (Input::isKeyPressed(keys[KEY_ESCAPE]))
-        application.exit();
+       application.exit();
 
     // change color
     if (Input::isKeyPressed(keys[KEY_CHANGE_COLOR]))
@@ -85,5 +119,22 @@ void GameActionControllerKeyboard::update(GameAction& gameAction, Application& a
         auto& c = gameAction.brush.color;
         c = (c << 1) + (c >> 31);
     }
+
+    if (Input::isKeyHold(keys[KEY_INCREASE_RED]))
+        changeColor(gameAction.brush.color,3,1);
+    if (Input::isKeyHold(keys[KEY_DECREASE_RED]))
+        removeColor(gameAction.brush.color,3);
+    if (Input::isKeyHold(keys[KEY_INCREASE_GREEN]))
+        changeColor(gameAction.brush.color,2,1);
+    if (Input::isKeyHold(keys[KEY_DECREASE_GREEN]))
+        removeColor(gameAction.brush.color,2);
+    if (Input::isKeyHold(keys[KEY_INCREASE_BLUE]))
+        changeColor(gameAction.brush.color,1,1);
+    if (Input::isKeyHold(keys[KEY_DECREASE_BLUE]))
+        removeColor(gameAction.brush.color,1);
+    if (Input::isKeyHold(keys[KEY_INCREASE_SHIN]))
+        changeColor(gameAction.brush.color,0,1);
+    if (Input::isKeyHold(keys[KEY_DECREASE_SHIN]))
+        removeColor(gameAction.brush.color,0);
 
 }

@@ -31,7 +31,15 @@ class GameActionControllerKeyboard : public GameActionController
             KEY_SIZE_P,
             KEY_SIZE_M,
             KEY_SAVE,
-            KEY_CHANGE_COLOR
+            KEY_CHANGE_COLOR,
+            KEY_INCREASE_RED,
+            KEY_DECREASE_RED,
+            KEY_INCREASE_BLUE,
+            KEY_DECREASE_BLUE,
+            KEY_INCREASE_GREEN,
+            KEY_DECREASE_GREEN,
+            KEY_INCREASE_SHIN,
+            KEY_DECREASE_SHIN
         };
 
         void assignKeys();
