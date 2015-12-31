@@ -1,7 +1,11 @@
 postwimp
 ========
 
-Description in progress
+A 3D painting software.
+
+Video
+=====
+Coming soon
 
 installing the required library
 ===============================
@@ -19,7 +23,8 @@ sudo apt-get install
 * libboost-system-dev
 * libboost-thread-dev
 
-There is some other libraries I forget.
+Install Polyvox and WiiCPP (see instructions below)
+
 
 installing the development version of PolyVox
 =======================================
@@ -34,6 +39,11 @@ you can type theses commands:
 * git checkout origin/develop
 * cmake .
 * sudo make install
+
+installing wiic : a C/C++ libray for controlling wiimotes and nunchunk
+=======================================================================
+* follow : [instructions](https://github.com/kaendfinger/wiic.git)
+
 
 Keyboard
 ========
