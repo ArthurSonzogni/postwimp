@@ -1,7 +1,7 @@
-postwimp
+Ensimag Post-WIMP project
 ========
 
-A 3D painting software.
+A 3D painting software with your two hands.
 
 Video
 =====
