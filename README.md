@@ -5,7 +5,8 @@ A 3D painting software.
 
 Video
 =====
-Coming soon
+
+[![Video here](http://img.youtube.com/vi/sjegf5U2250/0.jpg)](http://www.youtube.com/watch?v=sjegf5U2250)
 
 installing the required library
 ===============================
